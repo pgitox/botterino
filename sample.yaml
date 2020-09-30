@@ -1,0 +1,18 @@
+vegas_round:
+  title: 'What are my coordinates?'
+  answer: 36.170439, -115.139889
+  tolerance: 50.0
+  url: https://i.imgur.com/qBRRrbD.jpg
+paris_round:
+  title: 'What are my coordinates?'
+  answer: 76.170439, -85.139889
+  tolerance: 20.0
+  url: https://i.imgur.com/qBRRrbD.jpg
+  message: |
+    to add a message that will get posted in the commenst (for when the title is too long or you want to clarify something)
+
+    just add the "message" field and make sure to add a '|'
+
+    and it will post your clarification comment on the round. In this case the clarification comment will be what you are reading
+
+    right now

@@ -1,0 +1,15 @@
+Botterino: allows automation of hosting and posting of /r/picturegame rounds
+
+Dependencies:
+    praw
+    geopy
+    pyyaml
+
+to use:
+create an app at https://www.reddit.com/prefs/apps/ and fill in the missing None values in config.py
+
+then add rounds in the file 'rounds.yaml'
+
+run with: python botterino.py
+
+round will be removed from rounds.yaml and moved to archive.yaml

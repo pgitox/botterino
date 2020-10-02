@@ -39,8 +39,7 @@ def post_round(r):
         if message is not None:
             submission.reply(message)
         print('checking answers on round...')
-        x, y = r['answer'].split(',')
-        answer = float(x), float(y)
+        answer = r['answer']
         tolerance = float(r['tolerance'])
         check(submission, answer, tolerance)
     while approved_to_host():

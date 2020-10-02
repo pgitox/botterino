@@ -1,17 +1,20 @@
 from geopy.distance import distance
+from geopy.point import Point
 from config import donotreply, incorrect, pg, coords_not_found
 from random import choice
 import re
 
-decimal = re.compile("""([-+]?\d{1,2}[.]\d+),\s*([-+]?\d{1,3}[.]\d+)""")
+decimal_or_DMS = re.compile(
+    """(?:((?:[-+]?\d{1,2}[.]\d+),\s*(?:[-+]?\d{1,3}[.]\d+))|(\d{1,3}°\d{1,3}'\d{1,3}\.\d\"[N|S]\s\d{1,3}°\d{1,3}'\d{1,3}\.\d\"[E|W]))"""
+)
 
 
 def get_distance(guess, answer):
-    guess = re.search(decimal, guess)
+    guess = re.search(decimal_or_DMS, guess)
     if not guess:
         return
-    guess = guess[0].split(',')
-    coord = float(guess[0]), float(guess[1])
+    coord = Point(guess[0])
+    answer = Point(answer)
     try:
         return distance(coord, answer).m
     except Exception as e:

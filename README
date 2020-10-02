@@ -12,4 +12,4 @@ then add rounds in the file 'rounds.yaml'
 
 run with: python botterino.py
 
-round will be removed from rounds.yaml and moved to archive.yaml
+old rounds will be saved in archive.yaml

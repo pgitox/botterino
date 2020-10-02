@@ -1,6 +1,5 @@
-from posterino import load_rounds
-from posterino import post_round
-from posterino import wait
+from posterino import load_rounds, post_round, wait
+import time
 
 while True:
     rounds = load_rounds()
@@ -12,4 +11,5 @@ while True:
             post_round(r)
             wait()
     except TypeError as e:
-        print("No rounds in round file!")
+        print("No rounds in round file!", e)
+        time.sleep(15)

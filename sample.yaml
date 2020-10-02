@@ -1,8 +1,8 @@
 vegas_round:
   title: 'What are my coordinates?'
   answer: 36.170439, -115.139889 # this is a comment, it will be ignored. The 'answer' field should take a coord in decimal format.
-  tolerance: 50.0 # this field is optional. If you want your round to be posted automatically but not hosted automatically, leave this out. If tolerance is specified then 'answer' also must be
-  url: https://i.imgur.com/qBRRrbD.jpg
+  tolerance: 50.0 # this field is must be specified if your round is to be hosted automatically.
+  url: https://i.imgur.com/qBRRrbD.jpg  # If you want your round to be posted automatically but not hosted automatically, leave this out. If tolerance is specified then 'answer' also must be
 paris_round:
   title: 'What are my coordinates?'
   answer: 76.170439, -85.139889

@@ -34,9 +34,8 @@ def post_round(r):
         submission.reply(message)
     print(f'round {r} has been posted')
     if 'tolerance' in r:
-        time.sleep(15)
-        submission.reply(clarification)
         if message is not None:
+            time.sleep(15)
             submission.reply(message)
         print('checking answers on round...')
         answer = r['answer']

@@ -1,0 +1,71 @@
+
+# post a round but do not reply to any comments (host everything yourself)
+
+# put the title in quotes (either single or double). 
+# If the title itself contains quotes , use the opposite style of quotes.
+# If an apostrophe is used in your title, it is counted as a single quote
+vegas_round:
+  title: 'What are my coordinates?' 
+  answer: 36.170439, -115.139889 
+
+# post a round and reply to all comments
+# must specify answer and tolerance
+# answer must be in decimal format
+vegas_round:
+  title: 'What are my coordinates?'
+  answer: 36.170439, -115.139889 
+  tolerance: 50.0                         
+  url: https://i.imgur.com/qBRRrbD.jpg 
+
+# post a round, only reply to comments with incorrect coordinates
+# this means you will have to correct the winning comment yourself
+# useful if you want to ask an additional question
+  title: 'What are my coordinates? What is the name of the man to my right?'
+  answer: 76.170439, -85.139889
+  tolerance: 20.0
+  url: https://i.imgur.com/qBRRrbD.jpg
+  manual: true
+
+# post a round with a message
+# posts the message as a top level comment when the round is submitted
+Japanese:
+  title: '100 Music Video Rounds in 100 Languages - #13 Japanese - Coordinates of the drummer on the rooftop within 10 meters please'
+  answer: 25.046965, 121.522235
+  tolerance: 10
+  url: https://cdn.discordapp.com/attachments/735309018112983102/764113099388747786/unknown.png
+  message: "hello my name is itox and I like bridges"
+
+# post a round with a message containing multiple lines (add the | after 'message:')
+# posts the message as a top level comment when the round is submitted
+# note that reddit commenting requires two new lines to display a single new line
+Japanese:
+  title: '100 Music Video Rounds in 100 Languages - #13 Japanese - Coordinates of the drummer on the rooftop within 10 meters please'
+  answer: 25.046965, 121.522235
+  tolerance: 10
+  url: https://cdn.discordapp.com/attachments/735309018112983102/764113099388747786/unknown.png
+  message: |
+    In this series I will be doing a music video round for 100 lanuages in order of total number of speakers
+
+
+    [here](https://www.visualcapitalist.com/wp-content/uploads/2020/02/the-100-most-spoken-languages.jpg) is the full list 
+    I will be using. 
+    
+    Maksing only indicates the language and not necessarily the location
+
+# add multiple rounds in rounds.yaml
+# to do this, just put two rounds right next to each other like this:
+round_1:
+  title: 'foo'
+  answer: 12.34, 56.78
+  tolerance: 42.0
+  url: google.com
+round_2:
+  title: 'foo2'
+  answer: 12.34, 56.78
+  tolerance: 52.0
+  url: bing.com
+
+# remember to save the file rounds.yamk
+
+# rounds.yaml can be edited to add new rounds while the bot is running
+# when rounds are loaded, they are removed from rounds.yaml saved to a file called archive.yaml

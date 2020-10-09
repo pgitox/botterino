@@ -1,4 +1,4 @@
-from posterino import load_rounds, post_round, wait
+from botterino.posterino import load_rounds, post_round, wait
 import time
 
 while True:

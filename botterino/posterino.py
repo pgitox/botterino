@@ -42,7 +42,7 @@ def post_round(r):
     submission = pg.submit(title=f'{round_prefix()} {r["title"]}',
                            url=r['url'].strip())
     
-    print(f'round {r["title"]} posted in {post_delay()}s')
+    print(f'round \'{r["title"]}\' posted in {post_delay()}s')
     
     message = r.get('message')
     if message is not None:

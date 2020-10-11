@@ -65,7 +65,7 @@ round_2:
   tolerance: 52.0
   url: bing.com
 
-# remember to save the file rounds.yamk
+# remember to save the file rounds.yaml
 
 # rounds.yaml can be edited to add new rounds while the bot is running
 # when rounds are loaded, they are removed from rounds.yaml saved to a file called archive.yaml

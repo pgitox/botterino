@@ -1,7 +1,7 @@
 from RedditPoller.RedditPoller import RedditPoller
 from geopy.distance import distance
 from geopy.point import Point
-from config import donotreply, incorrect, pg, coords_not_found, username
+from config import donotreply, incorrect, pg, username
 import re
 
 comments = RedditPoller(pg.comments)
@@ -54,8 +54,8 @@ def check(submission, answer, tolerance, manual=False):
             correct = is_coord and error <= tolerance
             if correct and not manual:
                 plus_correct = c.reply('+correct')
-            elif not is_coord or not correct:
-                c.reply(incorrect if is_coord else coords_not_found)
+            elif is_coord and not correct:
+                c.reply(incorrect)
             print(f'{c.author}\'s guess {c.body} was {error} meters off')
             if correct and not manual:
                 print(

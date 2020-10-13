@@ -1,15 +1,14 @@
-from botterino.posterino import load_rounds, post_round, wait
+from botterino.posterino import post_round, wait
+from Loader.loader import load_rounds
 import time
 
 while True:
     rounds = load_rounds()
-    wait()
-    if not rounds:
-        rounds = load_rounds()
     try:
         for r in rounds:
-            post_round(r)
             wait()
-    except TypeError as e:
-        print("No rounds in round file!", e)
-        time.sleep(15)
+            post_round(r)
+    except RuntimeError as e:
+        print("No rounds in round file!")
+        time.sleep(5)
+        continue

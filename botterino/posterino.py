@@ -1,28 +1,8 @@
-import os
-import yaml
 import requests
 import time
 import json
 from botterino.hosterino import check
 from config import *
-
-
-def load_rounds():
-    with open(roundfile, 'r') as rounds:
-        x = yaml.load(rounds)
-    if not x:
-        return
-    clear_rounds()
-    return [x[key] for key in x]
-
-
-def clear_rounds():
-    with open(archivefile, 'a') as archive, open(roundfile, 'r') as old:
-        archive.write(''.join(old.readlines()))
-        archive.write('\n')
-    os.remove(roundfile)
-    with open(roundfile, 'w') as f:
-        f.write('')
 
 def post_delay():
     if debug:
@@ -48,7 +28,6 @@ def post_round(r):
     if message is not None:
         time.sleep(15)
         submission.reply(message)
-    time.sleep(0 if message is not None else 5)
 
     if 'tolerance' in r:
         print('checking answers on round...')
@@ -67,14 +46,10 @@ def round_prefix():
 
 
 def approved_to_host():
-    if debug:
-        return 
-
     c = next(iter(pg.contributor()))
     return c and c.name.lower() == username.lower()
 
 
 def wait():
-    if not debug:
-        while not approved_to_host():
-            continue
+    while not approved_to_host():
+        continue

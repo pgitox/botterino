@@ -4,6 +4,7 @@ Dependencies (pip install these):
     praw
     geopy
     pyyaml
+    ruamel.yaml
 
 to use:
 create an app at https://www.reddit.com/prefs/apps/ and fill in the missing None values in config.py

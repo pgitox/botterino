@@ -8,6 +8,7 @@ while True:
         for r in rounds:
             wait()
             post_round(r)
+            wait()
     except RuntimeError as e:
         print("No rounds in round file!")
         time.sleep(5)

@@ -16,12 +16,19 @@ archivefile = "rounds/archive.yaml"
 
 debug = False
 
+# set to True if you use 2fa
+two_factor = False
+pw_suffix = ''
+
+if two_factor:
+    pw_suffix = ':' + input("Enter 2fa code: ")
+
 reddit = praw.Reddit(
     client_id=client_id,
     client_secret=client_secret,
     user_agent=user_agent,
     username=username,
-    password=password,
+    password=password + pw_suffix,
 )
 
 pg = reddit.subreddit('itoxtestingfacility' if debug else 'picturegame')

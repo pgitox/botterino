@@ -15,7 +15,10 @@ def load_rounds():
         raise StopIteration
     k = next(iter(x))
     top = x.pop(k)
-    yaml.dump(x, rounds)
+    if x:
+        yaml.dump(x, rounds)
+    else: 
+        open(rounds, 'w').close()
     y = yaml.load(archive) or {}
     y[k] = top
     yaml.dump(y, archive)

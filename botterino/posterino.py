@@ -10,13 +10,17 @@ def post_delay():
 
     r = requests.get('https://api.picturegame.co/current')
     data = json.loads(r.content)
+    tries = 1
 
     while data['round']['hostName'].lower() != username.lower():
+        tries += 1
+        if tries > 3:
+            return -1
         r = requests.get('https://api.picturegame.co/current')
         data = json.loads(r.content)
         time.sleep(5)
 
-    return data['round']['postDelay']
+    return data['round'].get('postDelay', -1)
 
 def post_round(r):
     submission = pg.submit(title=f'{round_prefix()} {r["title"]}',

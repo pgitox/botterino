@@ -14,7 +14,7 @@ def post_delay():
 
     while data['round']['hostName'].lower() != username.lower():
         tries += 1
-        if tries > 3:
+        if tries > 5:
             return -1
         r = requests.get('https://api.picturegame.co/current')
         data = json.loads(r.content)

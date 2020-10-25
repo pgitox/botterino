@@ -29,6 +29,7 @@ def post_round(r):
     print(f'round \'{r["title"]}\' posted in {post_delay()}s')
     
     message = r.get('message')
+    after = r.get('after')
     if message is not None:
         time.sleep(15)
         submission.reply(message)
@@ -41,7 +42,8 @@ def post_round(r):
         check(submission, answer, tolerance, manual)
     while approved_to_host():
         continue
-
+    if after:
+        submission.reply(after)
 
 def round_prefix():
     r = requests.get('https://api.picturegame.co/current')

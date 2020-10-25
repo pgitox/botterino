@@ -52,6 +52,14 @@ Japanese:
     
     Maksing only indicates the language and not necessarily the location
 
+# post a message after the round is over
+Turkey_Round:
+  title: 'this is a title'
+  answer: 23.234,123.2312325
+  tolerance: 29.0
+  url: google.com
+  after: 'Full SP: [insert SP here]'
+
 # add multiple rounds in rounds.yaml
 # to do this, just put two rounds right next to each other like this:
 round_1:

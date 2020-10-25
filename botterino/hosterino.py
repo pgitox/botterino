@@ -23,7 +23,11 @@ def get_distance(guess, answer):
         match = re.search(everything_else, guess)
         if not match:
             return
-    coord = Point(match[0])
+    try:
+        coord = Point(match[0])
+    except ValueError as v:
+        print('something happened:', v) 
+        return
     try:
         return distance(coord, answer).m
     except Exception as e:

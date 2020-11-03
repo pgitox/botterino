@@ -5,7 +5,7 @@ from config import donotreply, incorrect, reddit, username
 import re
 import time 
 
-comments = RedditPoller(reddit.inbox.submission_replies)
+comments = RedditPoller(reddit.inbox.all)
 
 # google maps decimal or dms
 decimal_or_DMS = re.compile(
@@ -42,7 +42,7 @@ def get_comments(rp):
 
     while True:
         c = next(rp)
-        if c is not None:
+        if hasattr(c, 'submission'):
             yield c
 
 

@@ -42,7 +42,7 @@ def get_comments(rp):
 
     while True:
         c = next(rp)
-        if c is not None and hasattr(c, 'submission'):
+        if hasattr(c, 'submission'):
             yield c
 
 

@@ -3,6 +3,7 @@ from geopy.distance import distance
 from geopy.point import Point
 from config import donotreply, incorrect, reddit, username
 import re
+import time 
 
 comments = RedditPoller(reddit.inbox.all)
 
@@ -41,7 +42,7 @@ def get_comments(rp):
 
     while True:
         c = next(rp)
-        if c is not None:
+        if c is not None and hasattr(c, 'submission'):
             yield c
 
 

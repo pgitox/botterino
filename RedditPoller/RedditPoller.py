@@ -1,4 +1,4 @@
-import time
+import itertools
 
 from RedditPoller.Retry import retry
 
@@ -18,6 +18,13 @@ class FifoSet:
             self._set.remove(self._fifo.pop(0))
         self._fifo.append(item)
         self._set.add(item)
+
+class CommentWrapper:
+    def __init__(self, func1, func2):
+        self.f1 = func1
+        self.f2 = func2
+    def __call__(self, *args, **kwargs):
+        return itertools.chain(self.f1(*args, **kwargs), self.f2(*args, **kwargs))
 
 
 class RedditPoller:

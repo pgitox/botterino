@@ -1,6 +1,7 @@
 import requests
 import time
 import json
+from RedditPoller.Retry import retry
 from botterino.hosterino import check
 from config import *
 
@@ -55,7 +56,7 @@ def approved_to_host():
     c = next(iter(pg.contributor()))
     return c and c.name.lower() == username.lower()
 
-
+@retry
 def wait():
     while not approved_to_host():
         continue

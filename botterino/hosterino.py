@@ -1,10 +1,10 @@
-from RedditPoller.RedditPoller import RedditPoller, CommentWrapper
+from RedditPoller.RedditPoller import RedditPoller
 from geopy.distance import distance
 from geopy.point import Point
-from config import donotreply, incorrect, reddit, username, pg
+from config import donotreply, incorrect, reddit, username
 import re
 
-comments = RedditPoller(CommentWrapper(reddit.inbox.all, pg.comments))
+comments = RedditPoller(reddit.inbox.all)
 
 # google maps decimal or dms
 decimal_or_DMS = re.compile(

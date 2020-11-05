@@ -60,6 +60,18 @@ Turkey_Round:
   url: google.com
   after: 'Full SP: [insert SP here]'
 
+# check multiple coordinates
+# instead of specifying 'answer' and 'tolerance'
+#   you must now specify 'answers' and 'tolerances'
+#   each coordinate in 'answers' must be in quotes
+#   you must have as many tolerances as you have answers
+# # can be combined with the other options like manual or after
+Example:
+  title: give me 3 coordinates within 20m, 60m, 40m respectively
+  answers: ['55.1894288,30.19891', '5.3539059,-1.3835478', '69.511346, 103.513381']
+  tolerances: [20, 60, 40]
+  url: https://i.imgur.com/XhDXplk.jpg
+
 # add multiple rounds in rounds.yaml
 # to do this, just put two rounds right next to each other like this:
 round_1:

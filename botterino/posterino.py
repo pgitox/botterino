@@ -26,9 +26,9 @@ def post_delay():
 def post_round(r):
     submission = pg.submit(title=f'{round_prefix()} {r["title"]}',
                            url=r['url'].strip())
-    
+
     print(f'round \'{r["title"]}\' posted in {post_delay()}s')
-    
+
     message = r.get('message')
     after = r.get('after')
     if message is not None:
@@ -41,6 +41,14 @@ def post_round(r):
         tolerance = float(r['tolerance'])
         manual = r.get('manual', False)
         check(submission, answer, tolerance, manual)
+    elif 'tolerances' in r:
+        answer = r['answers']
+        tolerance = [float(t) for t in r['tolerances']]
+        if len(answer) != len(tolerance):
+            print('Refusing to check answers, number of tolerances must equal number of answers.') 
+        manual = r.get('manual', False)
+        check(submission, answer, tolerance, manual, multiple=True)
+
     while approved_to_host():
         continue
     if after:

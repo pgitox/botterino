@@ -53,7 +53,7 @@ def retry(action):
                     pass
                     # Logger.error(traceback.format_exc())
 
-                sleep(5)
+                sleep(10)
                 continue
 
             except (ConnectionError, ResponseException, RequestException) as e:
@@ -63,7 +63,7 @@ def retry(action):
                     pass
                     # Logger.error(traceback.format_exc())
 
-                sleep(5)
+                sleep(10)
                 continue
 
     return actionWithRetry

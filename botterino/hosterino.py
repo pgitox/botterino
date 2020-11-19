@@ -6,7 +6,6 @@ from config import donotreply, incorrect, reddit, username, pg
 from itertools import permutations
 import re
 
-comments = RedditPoller(CommentWrapper(pg.comments, reddit.inbox.all))
 
 decimal = re.compile("""([-+]?\d{1,2}[.]\d+),\s*([-+]?\d{1,3}[.]\d+)""")
 
@@ -70,6 +69,7 @@ def check_multiple(guess, answers, tolerances):
 
 
 def check(submission, answer, tolerance, manual=False, multiple=False):
+    comments = RedditPoller(CommentWrapper(pg.comments, reddit.inbox.all))
     if not multiple:
         answer = Point(answer)
     else:

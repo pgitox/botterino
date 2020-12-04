@@ -68,3 +68,4 @@ def approved_to_host():
 def wait():
     while not approved_to_host():
         continue
+    print('Round was posted')

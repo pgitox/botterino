@@ -24,12 +24,9 @@ def get_distance(guess, answer):
     match = re.search(decimal_or_DMS, guess)
     if not match:
         match = re.search(everything_else, guess)
-        if not match:
-            return
     try:
-        coord = Point(match[0])
+        coord = Point(match[0]) if match else Point(guess)
     except ValueError as v:
-        print('something happened:', v)
         return
     try:
         return distance(coord, answer).m

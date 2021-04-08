@@ -1,1 +1,4 @@
 __pycache__/
+praw.ini
+Rounds/rounds.yaml
+Rounds/archive.yaml

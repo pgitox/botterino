@@ -1,48 +1,11 @@
-from re import L
 from RedditPoller.RedditPoller import RedditPoller, CommentWrapper
 from geopy.distance import distance
 from geopy.point import Point
 from config import donotreply, incorrect, reddit, username, pg
 from itertools import permutations
 import re
-
-
-decimal = re.compile("""([-+]?\d{1,2}[.]\d+),\s*([-+]?\d{1,3}[.]\d+)""")
-
-# google maps decimal or dms
-decimal_or_DMS = re.compile(
-    """(?:((?:[-+]?\d{1,2}[.]\d+),\s*(?:[-+]?\d{1,3}[.]\d+))|(\d{1,3}°\d{1,3}'\d{1,3}\.\d\"[N|S]\s\d{1,3}°\d{1,3}'\d{1,3}\.\d\"[E|W]))"""
-)
-
-# google earth formats, other formats
-everything_else = re.compile(
-    """(^| )(-?\d{1,2}(\.\d+)?(?=\s*,?\s*)[\s,]+-?\d{1,3}(\.\d+)?|\d{1,2}(\.\d+°|°(\d{1,2}(\.\d+'|'(\d{1,2}(\.\d+)?\")?))?)[NS](?=\s*,?\s*)[\s,]+\d{1,3}(\.\d+°|°(\d{1,2}(\.\d+'|'(\d{1,2}(\.\d+)?\")?))?)[EW])"""
-)
-
-
-def get_distance(guess, answer):
-    match = re.search(decimal_or_DMS, guess)
-    if not match:
-        match = re.search(everything_else, guess)
-    try:
-        coord = Point(match[0]) if match else Point(guess)
-    except ValueError as v:
-        return
-    try:
-        return distance(coord, answer).m
-    except Exception as e:
-        print('There was a problem in getting distance', e)
-
-
-def get_comments(rp):
-    # flush old comments
-    while next(rp):
-        continue
-
-    while True:
-        c = next(rp)
-        if hasattr(c, 'submission'):
-            yield c
+from sty import fg
+from Utils.utils import decimal, getComments, getDistance, randomColor
 
 
 def check_helper(guess, answer, tolerance):
@@ -72,7 +35,7 @@ def check(submission, answer, tolerance, manual=False, multiple=False):
     else:
         answer = [Point(a) for a in answer]
     plus_correct = None
-    for c in get_comments(comments.getLatest()):
+    for c in getComments(comments.getLatest()):
         if c.author.name.lower() == username.lower() and '+correct' in c.body:
             return
 
@@ -82,7 +45,7 @@ def check(submission, answer, tolerance, manual=False, multiple=False):
         if c.author.name.lower() in donotreply or c.submission != submission:
             continue
 
-        error = get_distance(c.body, answer) if not multiple else None
+        error = getDistance(c.body, answer) if not multiple else None
         is_coord = error is not None
 
         if multiple:
@@ -95,11 +58,31 @@ def check(submission, answer, tolerance, manual=False, multiple=False):
         elif is_coord and not correct or not correct and multiple:
             c.reply(incorrect)
 
-        print(f'{c.author}\'s guess {c.body} was {error} meters off')
+        print(f'{randomColor()}{c.author}\'s guess {c.body} was {error} meters off')
 
         if correct and not manual:
             print(
-                f'corrected {c.author} in {plus_correct.created_utc - c.created_utc}s'
+                f'{randomColor()}corrected {c.author} in {plus_correct.created_utc - c.created_utc}s'
             )
         if correct and not manual:
             return
+
+def checkAnswers(r, submission):
+    after = r.get('after')
+    if 'tolerance' in r:
+        answer = r['answer']
+        tolerance = float(r['tolerance'])
+        manual = r.get('manual', False)
+        check(submission, answer, tolerance, manual)
+    elif 'tolerances' in r:
+        answer = r['answers']
+        tolerance = [float(t) for t in r['tolerances']]
+        if len(answer) != len(tolerance):
+            print('{fg.red}Refusing to check answers, number of tolerances must equal number of answers.') 
+        manual = r.get('manual', False)
+        check(submission, answer, tolerance, manual, multiple=True)
+
+    if after:
+        submission.reply(after)
+        print(f'{randomColor()}Posted your message after the round: {after}')
+

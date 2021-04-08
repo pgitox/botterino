@@ -1,13 +1,12 @@
 Botterino: allows automation of hosting and posting of /r/picturegame rounds
 
 Dependencies (pip install these):
-    praw
-    geopy
-    pyyaml
-    ruamel.yaml
+    see requirements.txt
+    "pip install -r requirements.txt"
 
 to use:
-create an app at https://www.reddit.com/prefs/apps/ and fill in the missing None values in config.py
+create an app at https://www.reddit.com/prefs/apps/ and fill in the missing values in praw.ini
+instructions on how to do this: https://www.reddit.com/r/redditdev/comments/hasnnc/where_do_i_find_the_reddit_client_id_and_secret/
 
 then add rounds in the file 'rounds/rounds.yaml', see 'sample.yaml' for more information
 

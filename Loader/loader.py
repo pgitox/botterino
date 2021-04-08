@@ -9,10 +9,10 @@ yaml.allow_duplicate_keys = True
 rounds = Path(roundfile)
 archive = Path(archivefile)
 
-def load_rounds():
+def getRound():
     x = yaml.load(rounds)
     if not x:
-        raise StopIteration
+        return None
     k = next(iter(x))
     top = x.pop(k)
     if x:
@@ -22,4 +22,4 @@ def load_rounds():
     y = yaml.load(archive) or {}
     y[k] = top
     yaml.dump(y, archive)
-    yield top
+    return top

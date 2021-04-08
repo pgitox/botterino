@@ -1,0 +1,7 @@
+ruamel.yaml
+pyyaml
+sty
+geopy
+praw
+requests
+configparser

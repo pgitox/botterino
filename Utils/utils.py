@@ -68,7 +68,6 @@ def getRoundPrefix():
     return f'[Round {roundnum}]'
 
 def approved():
-    return True
     c = next(iter(pg.contributor()))
     return c and c.name.lower() == username.lower()
 

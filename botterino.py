@@ -1,6 +1,6 @@
 from config import pg, username
 from sty import fg
-from Utils.utils import waitForApproval, approved, postDelay
+from Utils.utils import waitForApproval, approved, postDelay, randomColor
 from Loader.loader import getRound
 from Botterino.posterino import submitRound
 from Botterino.hosterino import checkAnswers
@@ -23,6 +23,7 @@ while True:
         time.sleep(10)
         r = getRound()
     submission = submitRound(r)
+    print(f'{randomColor()}Your round was posted to https://reddit.com{submission.permalink}')
     print(f'{fg.magenta}Round \'{r["title"]}\' posted in {postDelay()}s')
     print(f'{fg.cyan}Checking Answers: {checkType(r)}...')
     checkAnswers(r, submission)

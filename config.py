@@ -1,8 +1,7 @@
 import praw
-from configparser import ConfigParser
 from sty import fg
 
-debug = False
+debug = True
 
 roundfile = 'Rounds/rounds.yaml'
 archivefile = 'Rounds/archive.yaml'
@@ -16,9 +15,7 @@ except Exception as e:
     print(f'{fg.red}Unable to login to reddit. Please check praw.ini')
     print(f'{fg.red}{e}')
 
-parser = ConfigParser()
-parser.read('praw.ini')
-username = parser['botterino']['username']
+username = str(reddit.user.me())
 
 donotreply = {
     'achievements-bot',

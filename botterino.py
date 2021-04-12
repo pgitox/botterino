@@ -7,7 +7,7 @@ from Botterino.hosterino import checkAnswers
 import time 
 
 def checkType(r):
-    if 'tolerance' and 'answer' in r:
+    if 'tolerance' in r and 'answer' in r:
         return "automatic"
     if 'manual' in r:
         return 'x wrong guesses, manual correct'

@@ -1,7 +1,7 @@
 import praw
 from sty import fg
 
-debug = True
+debug = False
 
 roundfile = 'Rounds/rounds.yaml'
 archivefile = 'Rounds/archive.yaml'

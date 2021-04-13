@@ -16,7 +16,7 @@ def checkType(r):
 while True:
     print(f'{fg.yellow}Waiting for {username} to win a round... 🐌')
     waitForApproval()
-    print(f'{fg.blue}Congrats on a well deserved win {username}!')
+    print(f'{fg.blue}Congrats on a well deserved win {username}! ⭐')
     r = getRound()
     while not r: 
         print(f'{fg.red}No rounds in round file! checking again in 10s')

@@ -20,8 +20,8 @@ files = [
     'requirements.txt'
 ]
 
-def updateFile(f, content, encoding='utf-8'):
-    with open(f, 'w') as new:
+def updateFile(f, content):
+    with open(f, 'w', encoding='utf-8') as new:
         new.write(content)
     print(f'{randomColor()}Successfully updated file {f}')
 

@@ -22,7 +22,6 @@ everything_else = re.compile(
 )
 
 colors = [
-    fg.black,
     fg.red,
     fg.green,
     fg.yellow,

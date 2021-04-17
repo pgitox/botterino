@@ -28,8 +28,10 @@ def updateFile(f, content):
 def hasUpdate():
     for f in files:
         r = requests.get(baseURL.format(f))
-        with open(f, 'r') as old:
-            if r.text.strip() != old.read().strip():
+        with open(f, 'r', encoding='utf=8') as old:
+            old = old.read().strip().replace('\r\n', '\n')
+            new = r.text.strip().replace('\r\n', '\n')
+            if old != new:
                 return True
     return False
 
@@ -37,7 +39,7 @@ def doUpdate():
     for f in files:
         r = requests.get(baseURL.format(f))
         with open(f, 'r', encoding='utf-8') as old:
-            old = old.read().strip()
-            new = r.text.strip()
+            old = old.read().strip().replace('\r\n', '\n')
+            new = r.text.strip().replace('\r\n', '\n')
             if old != new:
                 updateFile(f, new)

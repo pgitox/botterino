@@ -20,7 +20,7 @@ files = [
     'requirements.txt'
 ]
 
-def updateFile(f, content):
+def updateFile(f, content, encoding='utf-8'):
     with open(f, 'w') as new:
         new.write(content)
     print(f'{randomColor()}Successfully updated file {f}')
@@ -36,7 +36,7 @@ def hasUpdate():
 def doUpdate(): 
     for f in files:
         r = requests.get(baseURL.format(f))
-        with open(f, 'r') as old:
+        with open(f, 'r', encoding='utf-8') as old:
             old = old.read().strip()
             new = r.text.strip()
             if old != new:

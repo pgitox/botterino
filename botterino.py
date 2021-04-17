@@ -1,6 +1,7 @@
 from config import pg, username
 from sty import fg
-from Utils.utils import waitForApproval, approved, postDelay, randomColor, update
+from Utils.utils import waitForApproval, approved, postDelay, randomColor
+from Utils import update
 from Loader.loader import getRound
 from Botterino.posterino import submitRound
 from Botterino.hosterino import checkAnswers

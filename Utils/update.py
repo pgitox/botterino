@@ -1,7 +1,5 @@
 from sty import fg
 import requests 
-import os 
-import tempfile
 
 baseURL = 'https://raw.githubusercontent.com/pgitox/botterino/master/{}'
 
@@ -31,7 +29,7 @@ def hasUpdate():
     for f in files:
         r = requests.get(baseURL.format(f))
         with open(f, 'r') as old:
-            if r.content != old.read():
+            if r.text != old.read():
                 return True
     return False
 
@@ -40,4 +38,4 @@ def doUpdate():
         r = requests.get(baseURL.format(f))
         with open(f, 'r') as old:
             if r.content != old.read():
-                updateFile(f, r.content)
+                updateFile(f, r.text)

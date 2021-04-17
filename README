@@ -36,3 +36,7 @@ Use botterino on a round that is already live:
     usage:
     edit answer and tolerance in failure.py
     run with: python failure.py
+
+Disable checking for updates:
+    if the prompt for updating annoys you, add the following line to praw.ini:
+    donotupdate=true

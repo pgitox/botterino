@@ -11,7 +11,7 @@ files = [
     'RedditPoller/Retry.py',
     'Rounds/sample.yaml',
     'Utils/utils.py',
-    'Utils/update.py'
+    'Utils/update.py',
     '.gitignore',
     'botterino.py',
     'config.py',

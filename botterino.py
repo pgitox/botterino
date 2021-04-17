@@ -16,7 +16,7 @@ def checkType(r):
 
 print(f'{fg.cyan}Checking for updates...')
 if update.hasUpdate():
-    doUpdate = input(f'{fg.green}There is an update available! Would you like to update? Enter Y/N').lower() == 'y'
+    doUpdate = input(f'{fg.green}There is an update available! Would you like to update? Enter Y/N ').lower() == 'y'
     if doUpdate:
         update.doUpdate()
         print(f'{fg.green}Successfully updated. Please restart botterino')

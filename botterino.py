@@ -23,7 +23,7 @@ if update.hasUpdate():
         exit(0)
 
 else:
-    print(f'{fg.orange}You are up to date!')
+    print(f'{fg.yellow}You are up to date!')
 
 while True:
     print(f'{fg.yellow}Waiting for {username} to win a round... 🐌')

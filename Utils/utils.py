@@ -98,5 +98,5 @@ def getComments(rp):
 
     while True:
         c = next(rp)
-        if hasattr(c, 'submission'):
+        if hasattr(c, 'submission') and hasattr(c, 'author'):
             yield c

@@ -20,10 +20,10 @@ parser.read('praw.ini')
 if not parser['botterino'].get('donotupdate'):
     print(f'{fg.cyan}Checking for updates...')
     if update.hasUpdate():
-        doUpdate = input(f'{fg.green}There is an update available! Would you like to update? Enter Y/N ').lower() == 'y'
+        doUpdate = input(f'{randomColor()}There is an update available! Would you like to update? Enter Y/N ').lower() == 'y'
         if doUpdate:
             update.doUpdate()
-            print(f'{fg.green}Successfully updated. Please restart botterino')
+            print(f'{fg.li_green}Successfully updated. Please restart botterino')
             exit(0)
     else:
         print(f'{fg.yellow}You are up to date!')

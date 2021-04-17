@@ -1,4 +1,4 @@
-from sty import fg
+from .utils import randomColor
 import requests 
 
 baseURL = 'https://raw.githubusercontent.com/pgitox/botterino/master/{}'
@@ -23,7 +23,7 @@ files = [
 def updateFile(f, content):
     with open(f, 'w') as new:
         new.write(content)
-    print(f'{fg.green}Sucessfully updated file {f}')
+    print(f'{randomColor()}Successfully updated file {f}')
 
 def hasUpdate():
     for f in files:
@@ -37,7 +37,7 @@ def doUpdate():
     for f in files:
         r = requests.get(baseURL.format(f))
         with open(f, 'r') as old:
-            old = old.read.strip()
+            old = old.read().strip()
             new = r.text.strip()
             if old != new:
                 updateFile(f, new)

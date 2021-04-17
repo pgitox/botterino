@@ -1,6 +1,6 @@
 from config import pg, username
 from sty import fg
-from Utils.utils import waitForApproval, approved, postDelay, randomColor
+from Utils.utils import waitForApproval, approved, postDelay, randomColor, update
 from Loader.loader import getRound
 from Botterino.posterino import submitRound
 from Botterino.hosterino import checkAnswers
@@ -12,6 +12,17 @@ def checkType(r):
     if 'manual' in r:
         return 'x wrong guesses, manual correct'
     return 'manual'
+
+print(f'{fg.cyan}Checking for updates...')
+if update.hasUpdate():
+    doUpdate = input(f'{fg.green}There is an update available! Would you like to update? Enter Y/N').lower() == 'y'
+    if doUpdate:
+        update.doUpdate()
+        print(f'{fg.green}Successfully updated. Please restart botterino')
+        exit(0)
+
+else:
+    print(f'{fg.purple}You are up to date!')
 
 while True:
     print(f'{fg.yellow}Waiting for {username} to win a round... 🐌')

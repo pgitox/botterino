@@ -11,7 +11,7 @@ files = [
     'RedditPoller/Retry.py',
     'Rounds/sample.yaml',
     'Utils/utils.py',
-    'Utils/update.py',
+    'Utils/update.py'
     '.gitignore',
     'botterino.py',
     'config.py',
@@ -29,7 +29,7 @@ def hasUpdate():
     for f in files:
         r = requests.get(baseURL.format(f))
         with open(f, 'r') as old:
-            if r.text != old.read():
+            if r.text.strip() != old.read().strip():
                 return True
     return False
 
@@ -37,5 +37,7 @@ def doUpdate():
     for f in files:
         r = requests.get(baseURL.format(f))
         with open(f, 'r') as old:
-            if r.content != old.read():
-                updateFile(f, r.text)
+            old = old.read.strip()
+            new = r.text.strip()
+            if old != new:
+                updateFile(f, new)

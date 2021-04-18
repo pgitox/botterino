@@ -2,7 +2,7 @@ import itertools
 
 from RedditPoller.Retry import retry
 
-POLL_LIMIT = 200
+POLL_LIMIT = 50
 
 class FifoSet:
     def __init__(self, size):
@@ -30,7 +30,7 @@ class CommentWrapper:
 class RedditPoller:
     def __init__(self, function, before = None):
         self.function = function
-        self.seenNames = FifoSet(POLL_LIMIT * 2)
+        self.seenNames = FifoSet(POLL_LIMIT * 1000)
         self.beforeName = before
 
     def getLatest(self):

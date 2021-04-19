@@ -58,7 +58,9 @@ def check(submission, answer, tolerance, manual=False, multiple=False):
         elif is_coord and not correct or not correct and multiple:
             c.reply(incorrect)
 
-        error = round(error, 2)
+        if isinstance(error, float):
+            error = round(error, 2)
+
         print(f'{randomColor()}{c.author}\'s guess {c.body} was {error} meters off')
 
         if correct and not manual:

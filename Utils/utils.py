@@ -3,11 +3,12 @@ from RedditPoller.Retry import retry
 from geopy.point import Point
 from geopy.distance import distance
 from sty import fg
-from random import choice
+from random import randrange
 import re
 import requests
 import json
 import time
+
 
 decimal = re.compile("""([-+]?\d{1,2}[.]\d+),\s*([-+]?\d{1,3}[.]\d+)""")
 
@@ -21,27 +22,9 @@ everything_else = re.compile(
     """(^| )(-?\d{1,2}(\.\d+)?(?=\s*,?\s*)[\s,]+-?\d{1,3}(\.\d+)?|\d{1,2}(\.\d+°|°(\d{1,2}(\.\d+'|'(\d{1,2}(\.\d+)?\")?))?)[NS](?=\s*,?\s*)[\s,]+\d{1,3}(\.\d+°|°(\d{1,2}(\.\d+'|'(\d{1,2}(\.\d+)?\")?))?)[EW])"""
 )
 
-colors = [
-    fg.red,
-    fg.green,
-    fg.yellow,
-    fg.blue,
-    fg.magenta,
-    fg.cyan,
-    fg.li_grey,
-    fg.rs,
-    fg.da_grey,
-    fg.li_red,
-    fg.li_green,
-    fg.li_yellow,
-    fg.li_blue,
-    fg.li_magenta,
-    fg.li_cyan,
-    fg.white
-]
-
 def randomColor():
-    return choice(colors)
+    color = randrange(256)
+    return fg(color)
 
 def postDelay():
     if debug: 

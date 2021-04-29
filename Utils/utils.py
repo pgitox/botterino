@@ -1,4 +1,4 @@
-from config import pg, username, debug 
+from config import pg, username, debug
 from RedditPoller.Retry import retry
 from geopy.point import Point
 from geopy.distance import distance
@@ -22,14 +22,18 @@ everything_else = re.compile(
     """(^| )(-?\d{1,2}(\.\d+)?(?=\s*,?\s*)[\s,]+-?\d{1,3}(\.\d+)?|\d{1,2}(\.\d+°|°(\d{1,2}(\.\d+'|'(\d{1,2}(\.\d+)?\")?))?)[NS](?=\s*,?\s*)[\s,]+\d{1,3}(\.\d+°|°(\d{1,2}(\.\d+'|'(\d{1,2}(\.\d+)?\")?))?)[EW])"""
 )
 
+badColors = [0, 15, 16] + list(range(231,256))
+
 def randomColor():
     color = randrange(256)
+    while color in badColors:
+        color = randrange(256)
     return fg(color)
 
 def postDelay():
-    if debug: 
+    if debug:
         return -1
-    
+
     r = requests.get('https://api.picturegame.co/current')
     data = json.loads(r.content)
     tries = 1

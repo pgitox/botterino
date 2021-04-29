@@ -5,7 +5,7 @@ from Utils import update
 from Loader.loader import getRound
 from Botterino.posterino import submitRound
 from Botterino.hosterino import checkAnswers
-import time 
+import time
 import configparser
 
 def checkType(r):
@@ -33,7 +33,7 @@ while True:
     waitForApproval()
     print(f'{fg.blue}Congrats on a well deserved win {username}! ⭐')
     r = getRound()
-    while not r: 
+    while not r:
         print(f'{fg.red}No rounds in round file! checking again in 10s')
         time.sleep(10)
         r = getRound()

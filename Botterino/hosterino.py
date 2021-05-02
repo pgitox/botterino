@@ -36,7 +36,7 @@ def check(submission, answer, tolerance, manual=False, multiple=False):
         answer = [Point(a) for a in answer]
     plus_correct = None
     for c in getComments(comments.getLatest()):
-        if c.author.name.lower() == username.lower() and '+correct' in c.body:
+        if c.author.name.lower() == username.lower() and '+correct' in c.body and not c.is_root:
             return
 
         if not c.is_root:
@@ -81,7 +81,7 @@ def checkAnswers(r, submission):
         answer = r['answers']
         tolerance = [float(t) for t in r['tolerances']]
         if len(answer) != len(tolerance):
-            print('{fg.red}Refusing to check answers, number of tolerances must equal number of answers.') 
+            print('{fg.red}Refusing to check answers, number of tolerances must equal number of answers.')
         manual = r.get('manual', False)
         check(submission, answer, tolerance, manual, multiple=True)
 

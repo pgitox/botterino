@@ -1,4 +1,5 @@
-from config import pg, username, debug
+from config import pg, username, debug, reddit, donotreply
+from RedditPoller.RedditPoller import RedditPoller, CommentWrapper
 from RedditPoller.Retry import retry
 from geopy.point import Point
 from geopy.distance import distance
@@ -77,12 +78,19 @@ def getDistance(guess, answer):
         print(f'{fg.red}There was a problem in getting distance for guess {guess}: {e}')
 
 
-def getComments(rp):
+def getComments(submission):
+    rp = RedditPoller(CommentWrapper(pg.comments, reddit.inbox.all))
+    comments = rp.getLatest()
     # flush old comments
-    while next(rp):
+    while next(comments):
         continue
 
-    while True:
-        c = next(rp)
+    for c in comments:
         if hasattr(c, 'submission') and hasattr(c, 'author') and c.author and c.submission:
+            if c.author.name.lower() == username.lower() and '+correct' in c.body and not c.is_root:
+                return
+            if not c.is_root:
+                continue
+            if c.author.name.lower() in donotreply or c.submission != submission:
+                continue
             yield c

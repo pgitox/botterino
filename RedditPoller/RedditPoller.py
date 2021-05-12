@@ -2,7 +2,7 @@ import itertools
 
 from RedditPoller.Retry import retry
 
-POLL_LIMIT = 10
+POLL_LIMIT = 50
 
 class FifoSet:
     def __init__(self, size):

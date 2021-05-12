@@ -1,4 +1,3 @@
-from RedditPoller.RedditPoller import RedditPoller, CommentWrapper
 from geopy.distance import distance
 from geopy.point import Point
 from config import donotreply, incorrect, reddit, username, pg
@@ -29,22 +28,12 @@ def check_multiple(guess, answers, tolerances):
 
 
 def check(submission, answer, tolerance, manual=False, multiple=False):
-    comments = RedditPoller(CommentWrapper(pg.comments, reddit.inbox.all))
     if not multiple:
         answer = Point(answer)
     else:
         answer = [Point(a) for a in answer]
     plus_correct = None
-    for c in getComments(comments.getLatest()):
-        if c.author.name.lower() == username.lower() and '+correct' in c.body and not c.is_root:
-            return
-
-        if not c.is_root:
-            continue
-
-        if c.author.name.lower() in donotreply or c.submission != submission:
-            continue
-
+    for c in getComments(submission):
         error = getDistance(c.body, answer) if not multiple else None
         is_coord = error is not None
 

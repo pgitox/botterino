@@ -43,6 +43,8 @@ def checkCoordinates(guess, answer, tolerance):
 def checkAnswers(r, submission):
     tolerance, manual, after, text, answer, tolerances, answers = float(r.get('tolerance', 0)), r.get(
         'manual'), r.get('after'), r.get('text'), r.get('answer'), r.get('tolerances'), r.get('answers')
+    if not tolerance and not tolerances:
+        return
     for c in getComments(submission):
         result = True
         if tolerance:

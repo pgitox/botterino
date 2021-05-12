@@ -7,73 +7,64 @@ from sty import fg
 from Utils.utils import decimal, getComments, getDistance, randomColor
 
 
-def check_helper(guess, answer, tolerance):
+def withinTolerance(guess, answer, tolerance):
     return distance(guess, answer).m <= tolerance
 
-
-def check_multiple(guess, answers, tolerances):
-    match = re.findall(decimal, guess)
+def checkMultipleCoordinates(guess, answers, tolerances):
+    answers = [Point(a) for a in answers]
+    match = re.findall(decimal, guess.body)
     if len(match) != len(answers):
+        # TODO print a message here
         return False
     try:
         points = [Point(f'{lat},{lon}') for lat, lon in match]
         points = permutations(points)
     except Exception as e:
-        print('Something happened: ', e, 'it probably does not matter')
+        print(f'{randomColor()}Something happened: ', e, 'it probably does not matter')
         return False
 
-    results = [[check_helper(p, a, t) for p, a, t in zip(ps, answers, tolerances)] for ps in points]
+    results = [[withinTolerance(p, a, t) for p, a, t in zip(ps, answers, tolerances)] for ps in points]
     results = [all(r) for r in results]
-    return any(results)
+    result = any(results)
+    if not result:
+        print(f'{randomColor()}{guess.author}\'s guess {guess.body} was incorrect')
+    return result
 
-
-def check(submission, answer, tolerance, manual=False, multiple=False):
-    if not multiple:
-        answer = Point(answer)
-    else:
-        answer = [Point(a) for a in answer]
-    plus_correct = None
-    for c in getComments(submission):
-        error = getDistance(c.body, answer) if not multiple else None
-        is_coord = error is not None
-
-        if multiple:
-            correct = check_multiple(c.body, answer, tolerance)
-        else:
-            correct = is_coord and error <= tolerance
-
-        if correct and not manual:
-            plus_correct = c.reply('+correct')
-        elif is_coord and not correct or not correct and multiple:
-            c.reply(incorrect)
-
-        if isinstance(error, float):
-            error = round(error, 2)
-
-        print(f'{randomColor()}{c.author}\'s guess {c.body} was {error} meters off')
-
-        if correct and not manual:
-            print(
-                f'{randomColor()}corrected {c.author} in {plus_correct.created_utc - c.created_utc}s'
-            )
-        if correct and not manual:
-            return
+def checkCoordinates(guess, answer, tolerance):
+    answer = Point(answer)
+    error = getDistance(guess.body, answer)
+    if error is None:
+        print(f"{randomColor()}Could not find a coordinate in guess '{guess.body}' by {guess.author}")
+        return 'ignore'
+    error = round(error, 2)
+    print(f'{randomColor()}{guess.author}\'s guess {guess.body} was {error} meters off')
+    return error <= tolerance
 
 def checkAnswers(r, submission):
-    after = r.get('after')
-    if 'tolerance' in r:
-        answer = r['answer']
-        tolerance = float(r['tolerance'])
-        manual = r.get('manual', False)
-        check(submission, answer, tolerance, manual)
-    elif 'tolerances' in r:
-        answer = r['answers']
-        tolerance = [float(t) for t in r['tolerances']]
-        if len(answer) != len(tolerance):
-            print('{fg.red}Refusing to check answers, number of tolerances must equal number of answers.')
-        manual = r.get('manual', False)
-        check(submission, answer, tolerance, manual, multiple=True)
+    tolerance, manual, after, text, answer, tolerances, answers = float(r.get('tolerance', 0)), r.get(
+        'manual'), r.get('after'), r.get('text'), r.get('answer'), r.get('tolerances'), r.get('answers')
+    for c in getComments(submission):
+        result = True
+        if tolerance:
+            r = checkCoordinates(c, answer, tolerance)
+            if r == 'ignore':
+                continue
+            result = result and r
+        elif tolerances:
+            tolerances = [float(t) for t in r['tolerances']]
+            if len(answers) != len(tolerances):
+                print('{fg.red}Refusing to check answers, number of tolerances must equal number of answers.')
+            result = result and checkMultipleCoordinates(c, answers, tolerances)
 
+        if not result:
+            c.reply(incorrect)
+        if result:
+            if manual:
+                print(f"{randomColor()}Guess '{c.body}' looks correct, but you will have to check it out.")
+            else:
+                plusCorrect = c.reply('+correct')
+                print(f'{randomColor()}Corrected {c.author} in {plusCorrect.created_utc - c.created_utc}s')
+                break
     if after:
         submission.reply(after)
         print(f'{randomColor()}Posted your message after the round: {after}')

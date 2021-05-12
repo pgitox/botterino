@@ -70,12 +70,11 @@ def getDistance(guess, answer):
     try:
         coord = Point(match[0]) if match else Point(guess)
     except ValueError as v:
-        print(f'{fg.red}There was a problem in getting distance: for guess {guess}{v}')
-
+        return
     try:
         return distance(coord, answer).m
     except Exception as e:
-        print(f'{fg.red}There was a problem in getting distance for guess {guess}: {e}')
+        return
 
 
 def getComments(submission):

@@ -11,6 +11,8 @@ import configparser
 def checkType(r):
     if 'tolerance' in r and 'answer' in r:
         return "automatic"
+    if 'tolerances' in r and 'answers' in r:
+        return "automatic"
     if 'manual' in r:
         return 'x wrong guesses, manual correct'
     return 'manual'

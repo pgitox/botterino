@@ -1,5 +1,5 @@
 from .utils import randomColor
-import requests 
+import requests
 
 baseURL = 'https://raw.githubusercontent.com/pgitox/botterino/master/{}'
 
@@ -15,6 +15,7 @@ files = [
     '.gitignore',
     'botterino.py',
     'config.py',
+    'failure.py'
     'README',
     'requirements.txt'
 ]
@@ -34,7 +35,7 @@ def hasUpdate():
                 return True
     return False
 
-def doUpdate(): 
+def doUpdate():
     for f in files:
         r = requests.get(baseURL.format(f))
         with open(f, 'r', encoding='utf-8') as old:

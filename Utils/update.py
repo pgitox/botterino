@@ -15,7 +15,7 @@ files = [
     '.gitignore',
     'botterino.py',
     'config.py',
-    'failure.py'
+    'failure.py',
     'README',
     'requirements.txt'
 ]

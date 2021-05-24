@@ -9,6 +9,7 @@ import re
 import requests
 import json
 import time
+import warnings
 
 
 decimal = re.compile("""([-+]?\d{1,2}[.]\d+),\s*([-+]?\d{1,3}[.]\d+)""")
@@ -75,7 +76,9 @@ def getDistance(guess, answer):
     if not match:
         match = re.search(everything_else, guess)
     try:
-        coord = Point(match[0]) if match else Point(guess)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            coord = Point(match[0]) if match else Point(guess)
     except ValueError as v:
         return
     try:

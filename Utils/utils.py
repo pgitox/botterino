@@ -25,6 +25,13 @@ everything_else = re.compile(
 
 badColors = [0, 15, 16] + list(range(231,256))
 
+def randomColorWithAuthor(author):
+    color = abs(hash(author)) % 256
+    while color in badColors:
+        author += '*'
+        color = abs(hash(color)) % 256
+    return fg(color)
+
 def randomColor():
     color = randrange(256)
     while color in badColors:

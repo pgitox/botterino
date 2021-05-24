@@ -4,13 +4,14 @@ from config import donotreply, incorrect, reddit, username, pg
 from itertools import permutations
 import re
 from sty import fg
-from Utils.utils import decimal, getComments, getDistance, randomColor
+from Utils.utils import decimal, getComments, getDistance, randomColor, randomColorWithAuthor
 
 
 def withinTolerance(guess, answer, tolerance):
     return distance(guess, answer).m <= tolerance
 
 def checkMultipleCoordinates(guess, answers, tolerances):
+    guesser = guess.author.name
     answers = [Point(a) for a in answers]
     match = re.findall(decimal, guess.body)
     if len(match) != len(answers):
@@ -27,17 +28,18 @@ def checkMultipleCoordinates(guess, answers, tolerances):
     results = [all(r) for r in results]
     result = any(results)
     if not result:
-        print(f'{randomColor()}{guess.author}\'s guess {guess.body} was incorrect')
+        print(f'{randomColorWithAuthor(guesser)}{guesser}\'s guess {guess.body} was incorrect')
     return result
 
 def checkCoordinates(guess, answer, tolerance):
+    guesser = guess.author.name
     answer = Point(answer)
     error = getDistance(guess.body, answer)
     if error is None:
-        print(f"{randomColor()}Could not find a coordinate in guess '{guess.body}' by {guess.author}")
+        print(f"{randomColorWithAuthor(guesser)}Could not find a coordinate in guess '{guess.body}' by {guesser}")
         return 'ignore'
     error = round(error, 2)
-    print(f'{randomColor()}{guess.author}\'s guess {guess.body} was {error} meters off')
+    print(f'{randomColorWithAuthor(guesser)}{guesser}\'s guess {guess.body} was {error} meters off')
     return error <= tolerance
 
 def checkAnswers(r, submission):
@@ -65,6 +67,7 @@ def checkAnswers(r, submission):
                 print(f"{randomColor()}Guess '{c.body}' looks correct, but you will have to check it out.")
             else:
                 plusCorrect = c.reply('+correct')
-                print(f'{randomColor()}Corrected {c.author} in {plusCorrect.created_utc - c.created_utc}s')
+                guesser = c.author.name
+                print(
+                    f'{randomColorWithAuthor(guesser)}Corrected {guesser} in {plusCorrect.created_utc - c.created_utc}s')
                 break
-

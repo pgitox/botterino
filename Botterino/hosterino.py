@@ -67,7 +67,4 @@ def checkAnswers(r, submission):
                 plusCorrect = c.reply('+correct')
                 print(f'{randomColor()}Corrected {c.author} in {plusCorrect.created_utc - c.created_utc}s')
                 break
-    if after:
-        submission.reply(after)
-        print(f'{randomColor()}Posted your message after the round: {after}')
 

@@ -46,3 +46,7 @@ while True:
     checkAnswers(r, submission)
     while approved():
         continue
+    after = r.get('after')
+    if after:
+        submission.reply(after)
+        print(f'{randomColor()}Posted your message after the round: {after}')

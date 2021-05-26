@@ -30,7 +30,7 @@ def randomColorWithAuthor(author):
     color = abs(hash(author)) % 256
     while color in badColors:
         author += '*'
-        color = abs(hash(color)) % 256
+        color = abs(hash(author)) % 256
     return fg(color)
 
 def randomColor():

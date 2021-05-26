@@ -16,6 +16,7 @@ def checkMultipleCoordinates(guess, answers, tolerances):
     match = re.findall(decimal, guess.body)
     if len(match) != len(answers):
         # TODO print a message here
+        print(f'{randomColorWithAuthor(guesser)}{guesser}\'s guess {guess.body} was incorrect')
         return False
     try:
         points = [Point(f'{lat},{lon}') for lat, lon in match]

@@ -16,7 +16,7 @@ files = [
     'botterino.py',
     'config.py',
     'failure.py',
-    'README',
+    'README.md`',
     'requirements.txt'
 ]
 

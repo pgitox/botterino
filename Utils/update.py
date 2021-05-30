@@ -1,5 +1,6 @@
 from .utils import randomColor
 import requests
+import os.path
 
 baseURL = 'https://raw.githubusercontent.com/pgitox/botterino/master/{}'
 
@@ -16,7 +17,7 @@ files = [
     'botterino.py',
     'config.py',
     'failure.py',
-    'README.md`',
+    'README.md',
     'requirements.txt'
 ]
 
@@ -28,6 +29,8 @@ def updateFile(f, content):
 def hasUpdate():
     for f in files:
         r = requests.get(baseURL.format(f))
+        if not os.path.isfile(f):
+            return True
         with open(f, 'r', encoding='utf=8') as old:
             old = old.read().strip().replace('\r\n', '\n')
             new = r.text.strip().replace('\r\n', '\n')
@@ -38,6 +41,9 @@ def hasUpdate():
 def doUpdate():
     for f in files:
         r = requests.get(baseURL.format(f))
+        if not os.path.isfile(f):
+            updateFile(f, r.text.strip().replace('\r\n', '\n'))
+            continue
         with open(f, 'r', encoding='utf-8') as old:
             old = old.read().strip().replace('\r\n', '\n')
             new = r.text.strip().replace('\r\n', '\n')

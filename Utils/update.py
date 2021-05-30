@@ -21,31 +21,35 @@ files = [
     'requirements.txt'
 ]
 
-def updateFile(f, content):
+
+def updateFile(f):
+    r = requests.get(baseURL.format(f))
+    content = r.text.strip().replace('\r\n', '\n')
     with open(f, 'w', encoding='utf-8') as new:
         new.write(content)
     print(f'{randomColor()}Successfully updated file {f}')
 
+
+def fileHasUpdate(f):
+    r = requests.get(baseURL.format(f))
+    if not os.path.isfile(f):
+        return True
+    with open(f, 'r', encoding='utf=8') as old:
+        old = old.read().strip().replace('\r\n', '\n')
+        new = r.text.strip().replace('\r\n', '\n')
+        if old != new:
+            return True
+    return False
+
+
 def hasUpdate():
     for f in files:
-        r = requests.get(baseURL.format(f))
-        if not os.path.isfile(f):
+        if fileHasUpdate(f):
             return True
-        with open(f, 'r', encoding='utf=8') as old:
-            old = old.read().strip().replace('\r\n', '\n')
-            new = r.text.strip().replace('\r\n', '\n')
-            if old != new:
-                return True
     return False
+
 
 def doUpdate():
     for f in files:
-        r = requests.get(baseURL.format(f))
-        if not os.path.isfile(f):
-            updateFile(f, r.text.strip().replace('\r\n', '\n'))
-            continue
-        with open(f, 'r', encoding='utf-8') as old:
-            old = old.read().strip().replace('\r\n', '\n')
-            new = r.text.strip().replace('\r\n', '\n')
-            if old != new:
-                updateFile(f, new)
+        if fileHasUpdate(f):
+            updateFile(f)

@@ -2,3 +2,4 @@ __pycache__/
 Rounds/rounds.yaml
 Rounds/archive.yaml
 praw.ini
+venv/

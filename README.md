@@ -2,17 +2,14 @@
 
 Botterino allows automation of hosting and posting of /r/picturegame coordinates rounds
 
-When running botterino, if you win a round, your round will automatically be posted. 
+When running botterino, if you win a round, your round will automatically be posted.
 It will reply with 'x' or '+correct' to any comments on your round automatically, with configurable tolerances.
 
 ---
 
-## Pre-requisites 
+## Pre-requisites
 
 1. You must have [Python](https://www.python.org/downloads/) installed on your computer
-2. Create `venv` folder
-    1. Windows: `py -3 -m venv venv`
-    2. Mac: `python3 -m venv venv`
 3. You must install items in 'requirements.txt'
     1. Run the command `pip install -r requirements.txt`
 4. You must [create a Reddit app](https://www.reddit.com/prefs/apps/)
@@ -27,9 +24,8 @@ It will reply with 'x' or '+correct' to any comments on your round automatically
 
 ## Usage
 
-As this is a python project, it must be run within the python environment.
-- Windows Powershell: `venv\Scripts\Activate.ps1`
-- macOS: `. venv/bin/activate`
+- add round(s) in rounds.yaml
+- python botterino.py
 
 ### Normal hosting
 
@@ -39,7 +35,7 @@ Rounds are kept in the 'Rounds/rounds.yaml' file, see 'Rounds/sample.yaml' for s
 1. Add round(s) to 'Rounds/rounds.yaml'
 2. Start app with `python botterino.py`
 
-Any new rounds added to 'Rounds/rounds.yaml' while the app is running will automatically be added to the queue, no need to restart. 
+Any new rounds added to 'Rounds/rounds.yaml' while the app is running will automatically be added to the queue, no need to restart.
 Once a round is complete, it will be moved to 'Rounds/archive.yaml'.
 
 ### Live rounds
@@ -47,8 +43,8 @@ Once a round is complete, it will be moved to 'Rounds/archive.yaml'.
 Botterino can be used on a round that is already live
 
 This is useful for cases where
-1. You post manually and decide you would like bot to host 
-2. Bot posts for you but crashes during hosting 
+1. You post manually and decide you would like bot to host
+2. Bot posts for you but crashes during hosting
 
 #### Steps
 1. Edit answer and tolerance in 'failure.py'
@@ -66,4 +62,4 @@ If the prompt for updating annoys you, add the following line to 'praw.ini'
 This botterino uses colorful output. If you see strange output like this on windows
 ![Strange windows output](https://cdn.discordapp.com/attachments/768582651669381191/830607745769930762/unknown.png)
 then download [Windows terminal](https://www.microsoft.com/en-us/p/windows-terminal/9n0dx20hk701?rtc=1) from the Microsoft store.
-        
+

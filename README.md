@@ -11,16 +11,16 @@ It will reply with 'x' or '+correct' to any comments on your round automatically
 
 1. You must have [Python](https://www.python.org/downloads/) installed on your computer
 2. Create `venv` folder
-  a. Windows: `py -3 -m venv venv`
-  b. Mac: `python3 -m venv venv`
+    1. Windows: `py -3 -m venv venv`
+    2. Mac: `python3 -m venv venv`
 3. You must install items in 'requirements.txt'
-  a. Run the command `pip install -r requirements.txt`
+    1. Run the command `pip install -r requirements.txt`
 4. You must [create a Reddit app](https://www.reddit.com/prefs/apps/)
-  a. Give app any name you choose, such as 'botterino'
-  b. Choose 'script' as app type
-  c. Fill in 'redirect URI' with `http://localhost:8080` (This is irrelevant but it's a required field)
-  d. Once created, you'll have a 'secret', copy/paste that as `client_secret` in praw.ini
-  e. You'll also have a less obvious client id, in the top left under the app name and the words 'personal use script' - copy/paste that into `client_id` in praw.ini
+    1. Give app any name you choose, such as 'botterino'
+    2. Choose 'script' as app type
+    3. Fill in 'redirect URI' with `http://localhost:8080` (This is irrelevant but it's a required field)
+    4. Once created, you'll have a 'secret', copy/paste that as `client_secret` in praw.ini
+    5. You'll also have a less obvious client id, in the top left under the app name and the words 'personal use script' - copy/paste that into `client_id` in praw.ini
 5. Fill out the rest of 'praw.ini' with your Reddit username/password as well as anything you want for `user_agent`
 
 ---

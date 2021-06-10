@@ -1,5 +1,5 @@
-from config import pg
-from Utils.utils import randomColor, getRoundPrefix 
+from .config import pg
+from .Utils.utils import randomColor, getRoundPrefix
 import time
 
 def submitRound(r):

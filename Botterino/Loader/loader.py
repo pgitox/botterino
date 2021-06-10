@@ -1,5 +1,5 @@
 from pathlib import Path
-from config import roundfile, archivefile
+from ..config import roundfile, archivefile
 import ruamel.yaml
 
 yaml = ruamel.yaml.YAML()
@@ -17,7 +17,7 @@ def getRound():
     top = x.pop(k)
     if x:
         yaml.dump(x, rounds)
-    else: 
+    else:
         open(rounds, 'w').close()
     y = yaml.load(archive) or {}
     y[k] = top

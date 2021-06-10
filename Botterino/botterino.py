@@ -1,12 +1,19 @@
-from config import pg, username
+from .config import pg, username
+from .posterino import submitRound
+from .hosterino import checkAnswers
+from .Utils.utils import waitForApproval, approved, postDelay, randomColor
+from .Loader.loader import getRound
 from sty import fg
-from Utils.utils import waitForApproval, approved, postDelay, randomColor
-from Utils import update
-from Loader.loader import getRound
-from Botterino.posterino import submitRound
-from Botterino.hosterino import checkAnswers
+from importlib.metadata import version
+from update_checker import UpdateChecker
 import time
-import configparser
+
+v = version('botterino')
+checker = UpdateChecker()
+result = checker.check('botterino', v)
+if result:
+    print(f'{fg.yellow}{result}')
+    print(f'{fg.yellow}run pip install --upgrade botterino to update')
 
 def checkType(r):
     if 'tolerance' in r and 'answer' in r:
@@ -16,19 +23,6 @@ def checkType(r):
     if 'manual' in r:
         return 'x wrong guesses, manual correct'
     return 'manual'
-
-parser = configparser.ConfigParser()
-parser.read('praw.ini')
-if not parser['botterino'].get('donotupdate'):
-    print(f'{fg.cyan}Checking for updates...')
-    if update.hasUpdate():
-        doUpdate = input(f'{randomColor()}There is an update available! Would you like to update? Enter Y/N ').lower() == 'y'
-        if doUpdate:
-            update.doUpdate()
-            print(f'{fg.li_green}Successfully updated. Please restart botterino')
-            exit(0)
-    else:
-        print(f'{fg.yellow}You are up to date!')
 
 while True:
     print(f'{fg.yellow}Waiting for {username} to win a round... 🐌')

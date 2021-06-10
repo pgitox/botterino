@@ -1,6 +1,6 @@
 import itertools
 
-from RedditPoller.Retry import retry
+from .Retry import retry
 
 POLL_LIMIT = 50
 

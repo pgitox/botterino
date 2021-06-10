@@ -1,6 +1,6 @@
-from config import pg, username, debug, reddit, donotreply
-from RedditPoller.RedditPoller import RedditPoller, CommentWrapper
-from RedditPoller.Retry import retry
+from ..config import pg, username, debug, reddit, donotreply
+from ..RedditPoller.RedditPoller import RedditPoller, CommentWrapper
+from ..RedditPoller.Retry import retry
 from geopy.point import Point
 from geopy.distance import distance
 from sty import fg

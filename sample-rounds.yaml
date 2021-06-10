@@ -1,27 +1,30 @@
 
-# indentation must be two spaces for all rounds 
+# indentation must be two spaces for all rounds
 
 # post a round but do not reply to any comments (host everything yourself)
 
-# put the title in quotes (either single or double). 
+vegas_round:
+  title: 'What are my coordinates?'
+  url: imgur.com/notarealurl
+
+# put the title in quotes (either single or double).
 # If the title itself contains quotes , use the opposite style of quotes.
 # If an apostrophe is used in your title, it is counted as a single quote
-vegas_round:
-  title: 'What are my coordinates?' 
-  answer: 36.170439, -115.139889 
+
 
 # post a round and reply to all comments
 # must specify answer and tolerance
 # answer must be in decimal format
 vegas_round:
   title: 'What are my coordinates?'
-  answer: 36.170439, -115.139889 
-  tolerance: 50.0                         
-  url: https://i.imgur.com/qBRRrbD.jpg 
+  answer: 36.170439, -115.139889
+  tolerance: 50.0
+  url: https://i.imgur.com/qBRRrbD.jpg
 
 # post a round, only reply to comments with incorrect coordinates
 # this means you will have to correct the winning comment yourself
 # useful if you want to ask an additional question
+manualround:
   title: 'What are my coordinates? What is the name of the man to my right?'
   answer: 76.170439, -85.139889
   tolerance: 20.0
@@ -49,9 +52,9 @@ Japanese:
     In this series I will be doing a music video round for 100 lanuages in order of total number of speakers
 
 
-    [here](https://www.visualcapitalist.com/wp-content/uploads/2020/02/the-100-most-spoken-languages.jpg) is the full list 
-    I will be using. 
-    
+    [here](https://www.visualcapitalist.com/wp-content/uploads/2020/02/the-100-most-spoken-languages.jpg) is the full list
+    I will be using.
+
     Maksing only indicates the language and not necessarily the location
 
 # post a message after the round is over

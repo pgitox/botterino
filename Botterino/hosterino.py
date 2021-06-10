@@ -1,10 +1,10 @@
 from geopy.distance import distance
 from geopy.point import Point
-from config import donotreply, incorrect, reddit, username, pg
+from .config import donotreply, incorrect, reddit, username, pg
 from itertools import permutations
 import re
 from sty import fg
-from Utils.utils import decimal, getComments, getDistance, randomColor, randomColorWithAuthor
+from .Utils.utils import decimal, getComments, getDistance, randomColor, randomColorWithAuthor
 
 
 def withinTolerance(guess, answer, tolerance):

@@ -1,5 +1,0 @@
-train:
-  title: "Coordinates of the streetview car here within 100 meters?"
-  answer: 56.8735327,35.8508669
-  tolerance: 100
-  url: https://i.imgur.com/EDuykqd.jpg

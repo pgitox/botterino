@@ -39,9 +39,9 @@ It will reply with 'x' or '+correct' to any comments on your round automatically
 Rounds are kept in the 'rounds/rounds.yaml' file, see 'sample.yaml' for some examples
 
 #### Steps
-1. Add round(s) to 'rounds/rounds.yaml'
+1. Add round(s) to 'botterino-config/rounds/rounds.yaml'
 2. Open a terminal or command prompt and type `python -m botterino`
-    1. Then all you have to do is win. Unil you win, botterino will do nothing
+    1. Then all you have to do is win. Until you win, botterino will do nothing
     2. When you win, the top round in rounds.yaml is posted as soon as you are approved to host
 
 Any new rounds added to 'botterino-config/rounds/rounds.yaml' while the app is running will automatically be added to the queue, no need to restart.
@@ -53,7 +53,7 @@ Botterino can be used on a round that is already live
 
 This is useful for cases where
 1. You post manually and decide you would like bot to host
-2. Bot posts for you but crashes during hosting
+2. Bot posts for you but crashes during hosting for some reason
 
 #### Steps
 1. Will use the top round in rounds.yaml

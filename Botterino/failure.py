@@ -15,6 +15,6 @@ while not r:
 submission = next(iter(pg.new()))
 print(f'{randomColor()}Checking answers on https://reddit.com{submission.permalink}')
 checkAnswers(r, submission)
-after = r.get(after)
+after = r.get('after')
 if after:
     submission.reply(after)

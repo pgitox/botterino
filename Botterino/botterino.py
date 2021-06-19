@@ -8,6 +8,8 @@ from importlib.metadata import version
 from update_checker import UpdateChecker
 import time
 
+#test
+
 v = version('botterino')
 checker = UpdateChecker()
 result = checker.check('botterino', v)

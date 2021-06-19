@@ -18,7 +18,7 @@ def getRound():
     if x:
         yaml.dump(x, rounds)
     else:
-        open(rounds, 'w').close()
+        open(rounds, 'w', encoding='utf-8').close()
     y = yaml.load(archive) or {}
     y[k] = top
     yaml.dump(y, archive)

@@ -5,6 +5,7 @@ from geopy.point import Point
 from geopy.distance import distance
 from sty import fg
 from random import randrange
+from halo import Halo
 import re
 import requests
 import json
@@ -67,6 +68,7 @@ def approved():
     return c and c.name.lower() == username.lower()
 
 @retry
+@Halo(spinner='dots', color='yellow')
 def waitForApproval():
     while not approved():
         continue

@@ -68,6 +68,11 @@ This is useful for cases where
 Update this botterino with
 `pip install --upgrade botterino`
 
+### Issues
+* Bot does not run, crash message shows 403 error, everything in praw.ini looks correct
+    1. try a different user agent
+
+
 ### Colors on windows
 This botterino uses colorful output. If you see strange output like this on windows
 ![Strange windows output](https://cdn.discordapp.com/attachments/768582651669381191/830607745769930762/unknown.png)

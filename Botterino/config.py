@@ -14,7 +14,7 @@ cwd = os.getcwd()
 try:
     os.chdir(botfiles.botconfig)
     reddit = praw.Reddit('botterino')
-    print(f'{fg.green}Sucessfully logged into reddit as {reddit.user.me()}')
+    print(f'{fg.green}Successfully logged into reddit as {reddit.user.me()}')
 except Exception as e:
     print(f'{fg.red}Unable to login to reddit. Please check {botfiles.prawconfig}')
     print(f'{fg.red}{e}')

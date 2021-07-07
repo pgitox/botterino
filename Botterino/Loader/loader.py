@@ -6,20 +6,25 @@ yaml = ruamel.yaml.YAML()
 yaml.preserve_quotes = True
 yaml.allow_duplicate_keys = True
 
-rounds = Path(roundfile)
-archive = Path(archivefile)
+def dump(data, file):
+    with open(file, 'w', encoding='utf-8') as f:
+        yaml.dump(data, f)
+
+def load(file):
+    with open(file, 'r', encoding='utf-8') as f:
+        return yaml.load(f)
 
 def getRound():
-    x = yaml.load(rounds)
+    x = load(roundfile)
     if not x:
         return None
     k = next(iter(x))
     top = x.pop(k)
     if x:
-        yaml.dump(x, rounds)
+        dump(x, roundfile)
     else:
-        open(rounds, 'w', encoding='utf-8').close()
-    y = yaml.load(archive) or {}
+        open(roundfile, 'w', encoding='utf-8').close()
+    y = load(archivefile) or {}
     y[k] = top
-    yaml.dump(y, archive)
+    dump(y, archivefile)
     return top

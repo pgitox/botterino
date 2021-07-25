@@ -23,10 +23,9 @@ for f in files:
 
 if not os.path.exists(botfiles.configfile):
     parser = ConfigParser()
-    parser['config'] = {
-        'correct_message' : '+correct',
-        'incorrect_message' : '❌'
-    }
+    parser.add_section('config')
+    parser.set('config', 'correct_message', '+corerct')
+    parser.set('config', 'incorrect_message', '❌')
     with open(botfiles.configfile, 'w') as f:
         parser.write(f)
 

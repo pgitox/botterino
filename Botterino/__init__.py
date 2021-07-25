@@ -30,6 +30,6 @@ if not os.path.exists(botfiles.configfile):
         parser.write(f)
 
 parser = ConfigParser()
-parser.read(botfiles.configfile)
+parser.read(botfiles.configfile, encoding='utf-8')
 correctMessage, incorrectMessage = parser['config']['correct_message'], parser[
     'config']['incorrect_message']

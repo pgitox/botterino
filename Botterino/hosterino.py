@@ -47,7 +47,7 @@ def checkText(guess, answer, tolerance, ignorecase):
     guesser = guess.author.name
     text = guess.body.strip().replace('\\', '')
 
-    if not ignorecase:
+    if ignorecase:
         text,answer = text.lower(), answer.lower()
 
     similarity = SequenceMatcher(None, text, answer).ratio()
@@ -79,7 +79,7 @@ def checkAnswers(r, submission):
         if text and not similarity:
             similarity = 1.0
 
-        if not ignorecase:
+        if ignorecase is None:
             ignorecase = True
 
         if text:

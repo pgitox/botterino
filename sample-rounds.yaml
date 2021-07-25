@@ -22,7 +22,7 @@ vegas_round:
   tolerance: 50.0
   url: https://i.imgur.com/qBRRrbD.jpg
 
-# post a round and check text
+# post a round and check text (case insensitive)
   # use the 'text' field to check text and add 'similarity'
   # similarity ranges from 0.0 - 1.0
   # a similarity of 1.0 will only correct exact matches
@@ -35,6 +35,14 @@ text_round:
   similarity: .9 # will correct the guess if it is at least 90% similar to the answer. This field is required to check text
   url: https://i.imgur.com/qBRRrbD.jpg
 
+
+# check text (case sensitive)
+text_round:
+  title: foo
+  url: imgur.com/abcd
+  text: Some Text
+  similarity: .96
+  ignorecase: False
 
 # post a round, only reply to comments with incorrect coordinates
 # this means you will have to correct the winning comment yourself

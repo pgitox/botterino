@@ -1,10 +1,12 @@
 import os
 from pathlib import Path
+from configparser import ConfigParser
 
 class files():
     def __init__(self):
         self.home = os.path.expanduser('~')
         self.botconfig = os.path.join(self.home, 'botterino-config')
+        self.configfile = os.path.join(self.botconfig, 'config.ini')
         self.roundsdir = os.path.join(self.botconfig, 'rounds')
         self.rounds = os.path.join(self.roundsdir, 'rounds.yaml')
         self.archive = os.path.join(self.roundsdir, 'archive.yaml')
@@ -18,3 +20,17 @@ for d in dirs:
 for f in files:
     with open(f, 'a+'):
         pass
+
+if not os.path.exists(botfiles.configfile):
+    parser = ConfigParser()
+    parser['config'] = {
+        'correct_message' : '+correct',
+        'incorrect_message' : '❌'
+    }
+    with open(botfiles.configfile, 'w') as f:
+        parser.write(f)
+
+parser = ConfigParser()
+parser.read(botfiles.configfile)
+correctMessage, incorrectMessage = parser['config']['correct_message'], parser[
+    'config']['incorrect_message']

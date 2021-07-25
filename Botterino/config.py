@@ -1,7 +1,7 @@
 import praw
 import os
 import sys
-from . import botfiles
+from . import botfiles, correctMessage, incorrectMessage
 from sty import fg
 
 if sys.platform == 'win32':
@@ -32,4 +32,3 @@ donotreply = {
     'imreallycuriousbird',
 }
 
-incorrect = '❌'

@@ -64,6 +64,9 @@ This is useful for cases where
 
 ## Misc
 
+### Customize
+Options such as correct message and incorrect message can be customized in botterino-config/config.ini
+
 ### Update
 Update this botterino with
 `pip install --upgrade botterino`

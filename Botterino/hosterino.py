@@ -1,6 +1,6 @@
 from geopy.distance import distance
 from geopy.point import Point
-from .config import donotreply, incorrect, reddit, username, pg
+from .config import donotreply, correctMessage, incorrectMessage, reddit, username, pg
 from itertools import permutations
 import re
 from sty import fg
@@ -51,7 +51,7 @@ def checkText(guess, answer, tolerance, ignorecase):
         text,answer = text.lower(), answer.lower()
 
     similarity = SequenceMatcher(None, text, answer).ratio()
-    print(f'{randomColorWithAuthor(guesser)}{guesser}\'s guess was {round(similarity, 3)}% similar to the correct answer')
+    print(f'{randomColorWithAuthor(guesser)}{guesser}\'s guess was {round(similarity * 100, 3)}% similar to the correct answer')
     return similarity >= tolerance
 
 def checkAnswers(r, submission):
@@ -60,7 +60,7 @@ def checkAnswers(r, submission):
             'text'), r.get('answer'), r.get('tolerances'), r.get(
                 'answers'), r.get('similarity'), r.get('ignorecase')
 
-    if not tolerance and not tolerances and not text:
+    if tolerance is None and tolerances is None and text is None:
         return
 
     for c in getComments(submission):
@@ -76,8 +76,8 @@ def checkAnswers(r, submission):
                 print('{fg.red}Refusing to check answers, number of tolerances must equal number of answers.')
             result = result and checkMultipleCoordinates(c, answers, tolerances)
 
-        if text and not similarity:
-            similarity = 1.0
+        if text and similarity is None:
+            continue
 
         if ignorecase is None:
             ignorecase = True
@@ -86,12 +86,12 @@ def checkAnswers(r, submission):
             result = result and checkText(c, text, similarity, ignorecase)
 
         if not result:
-            c.reply(incorrect)
+            c.reply(incorrectMessage)
         if result:
             if manual:
                 print(f"{randomColor()}Guess '{c.body}' looks correct, but you will have to check it out.")
             else:
-                plusCorrect = c.reply('+correct')
+                plusCorrect = c.reply(correctMessage)
                 guesser = c.author.name
                 print(
                     f'{randomColorWithAuthor(guesser)}Corrected {guesser} in {plusCorrect.created_utc - c.created_utc}s')

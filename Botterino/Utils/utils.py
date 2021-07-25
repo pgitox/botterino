@@ -25,6 +25,8 @@ everything_else = re.compile(
     """(^| )(-?\d{1,2}(\.\d+)?(?=\s*,?\s*)[\s,]+-?\d{1,3}(\.\d+)?|\d{1,2}(\.\d+°|°(\d{1,2}(\.\d+'|'(\d{1,2}(\.\d+)?\")?))?)[NS](?=\s*,?\s*)[\s,]+\d{1,3}(\.\d+°|°(\d{1,2}(\.\d+'|'(\d{1,2}(\.\d+)?\")?))?)[EW])"""
 )
 
+MAPS_URL = 'https://maps.google.com/maps?t=k&q=loc:{},{}'
+
 badColors = [0, 15, 16] + list(range(231,256))
 
 def randomColorWithAuthor(author):
@@ -84,7 +86,7 @@ def getDistance(guess, answer):
     except ValueError as v:
         return
     try:
-        return distance(coord, answer).m
+        return distance(coord, answer).m, coord
     except Exception as e:
         return
 

@@ -4,7 +4,7 @@ from .config import donotreply, correctMessage, incorrectMessage, reddit, userna
 from itertools import permutations
 import re
 from sty import fg
-from .Utils.utils import decimal, getComments, getDistance, randomColor, randomColorWithAuthor
+from .Utils.utils import decimal, getComments, getDistance, randomColor, randomColorWithAuthor, MAPS_URL
 from difflib import SequenceMatcher
 
 def withinTolerance(guess, answer, tolerance):
@@ -35,12 +35,13 @@ def checkMultipleCoordinates(guess, answers, tolerances):
 def checkCoordinates(guess, answer, tolerance):
     guesser = guess.author.name
     answer = Point(answer)
-    error = getDistance(guess.body, answer)
+    error, point = getDistance(guess.body, answer)
     if error is None:
         print(f"{randomColorWithAuthor(guesser)}Could not find a coordinate in guess '{guess.body}' by {guesser}")
         return 'ignore'
     error = round(error, 2)
-    print(f'{randomColorWithAuthor(guesser)}{guesser}\'s guess {guess.body[:120]} was {error} meters off')
+    mapslink = MAPS_URL.format(point.latitude, point.longitude)
+    print(f'{randomColorWithAuthor(guesser)}{guesser}\'s guess {mapslink} was {error} meters off')
     return error <= tolerance
 
 def checkText(guess, answer, tolerance, ignorecase):

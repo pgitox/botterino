@@ -1,5 +1,6 @@
 
-# indentation must be two spaces for all rounds
+# rounds use yaml syntax
+# indentation must be two spaces
 
 # post a round but do not reply to any comments (host everything yourself)
 
@@ -20,6 +21,20 @@ vegas_round:
   answer: 36.170439, -115.139889
   tolerance: 50.0
   url: https://i.imgur.com/qBRRrbD.jpg
+
+# post a round and check text
+  # use the 'text' field to check text and add 'similarity'
+  # similarity ranges from 0.0 - 1.0
+  # a similarity of 1.0 will only correct exact matches
+  # this is not a good method to check for short strings
+  # be careful when using this. don't get banned.
+# (can also check text and coordinates on the same round)
+text_round:
+  title: what did johnny have to say about this restaurant on google maps?
+  text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+  similarity: .9 # will correct the guess if it is at least 90% similar to the answer. This field is required to check text
+  url: https://i.imgur.com/qBRRrbD.jpg
+
 
 # post a round, only reply to comments with incorrect coordinates
 # this means you will have to correct the winning comment yourself

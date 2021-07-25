@@ -13,16 +13,23 @@ checker = UpdateChecker()
 result = checker.check('botterino', v)
 if result:
     print(f'{fg.yellow}{result}')
-    print(f'{fg.yellow}run pip install --upgrade botterino to update')
+    print(f'{fg.yellow}run "pip install --upgrade botterino" to update')
 
 def checkType(r):
+    types = []
     if 'tolerance' in r and 'answer' in r:
-        return "automatic"
+        types.append('coordinates')
     if 'tolerances' in r and 'answers' in r:
-        return "automatic"
+        types.append('multiple coordinates')
+    if 'text' in r and 'similarity' in r:
+        types.append('text match')
     if 'manual' in r:
-        return 'x wrong guesses, manual correct'
-    return 'manual'
+        types.append('x wrong guesses with manual correct')
+    if not types:
+        return 'no automatic replies'
+    if 'manual' not in r:
+        types.append('automatic')
+    return ','.join(types)
 
 while True:
     print(f'{fg.yellow}Waiting for {username} to win a round... 🐌')

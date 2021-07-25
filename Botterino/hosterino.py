@@ -5,7 +5,7 @@ from itertools import permutations
 import re
 from sty import fg
 from .Utils.utils import decimal, getComments, getDistance, randomColor, randomColorWithAuthor
-
+from difflib import SequenceMatcher
 
 def withinTolerance(guess, answer, tolerance):
     return distance(guess, answer).m <= tolerance
@@ -40,14 +40,29 @@ def checkCoordinates(guess, answer, tolerance):
         print(f"{randomColorWithAuthor(guesser)}Could not find a coordinate in guess '{guess.body}' by {guesser}")
         return 'ignore'
     error = round(error, 2)
-    print(f'{randomColorWithAuthor(guesser)}{guesser}\'s guess {guess.body} was {error} meters off')
+    print(f'{randomColorWithAuthor(guesser)}{guesser}\'s guess {guess.body[:120]} was {error} meters off')
     return error <= tolerance
 
+def checkText(guess, answer, tolerance, ignorecase):
+    guesser = guess.author.name
+    text = guess.body.strip().replace('\\', '')
+
+    if not ignorecase:
+        text,answer = text.lower(), answer.lower()
+
+    similarity = SequenceMatcher(None, text, answer).ratio()
+    print(f'{randomColorWithAuthor(guesser)}{guesser}\'s guess was {round(similarity, 3)}% similar to the correct answer')
+    return similarity >= tolerance
+
 def checkAnswers(r, submission):
-    tolerance, manual, after, text, answer, tolerances, answers = float(r.get('tolerance', 0)), r.get(
-        'manual'), r.get('after'), r.get('text'), r.get('answer'), r.get('tolerances'), r.get('answers')
-    if not tolerance and not tolerances:
+    tolerance, manual, after, text, answer, tolerances, answers, similarity, ignorecase = float(
+        r.get('tolerance', 0)), r.get('manual'), r.get('after'), r.get(
+            'text'), r.get('answer'), r.get('tolerances'), r.get(
+                'answers'), r.get('similarity'), r.get('ignorecase')
+
+    if not tolerance and not tolerances and not text:
         return
+
     for c in getComments(submission):
         result = True
         if tolerance:
@@ -60,6 +75,15 @@ def checkAnswers(r, submission):
             if len(answers) != len(tolerances):
                 print('{fg.red}Refusing to check answers, number of tolerances must equal number of answers.')
             result = result and checkMultipleCoordinates(c, answers, tolerances)
+
+        if text and not similarity:
+            similarity = 1.0
+
+        if not ignorecase:
+            ignorecase = True
+
+        if text:
+            result = result and checkText(c, text, similarity, ignorecase)
 
         if not result:
             c.reply(incorrect)

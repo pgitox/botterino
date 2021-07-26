@@ -35,7 +35,7 @@ def checkMultipleCoordinates(guess, answers, tolerances):
 def checkCoordinates(guess, answer, tolerance):
     guesser = guess.author.name
     answer = Point(answer)
-    error, point = getDistance(guess.body, answer)
+    error, point = getDistance(guess.body, answer) or None, None
     if error is None:
         print(f"{randomColorWithAuthor(guesser)}Could not find a coordinate in guess '{guess.body}' by {guesser}")
         return 'ignore'

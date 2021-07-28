@@ -57,13 +57,15 @@ def checkText(guess, answer, tolerance, ignorecase):
     return similarity >= tolerance
 
 def checkAnswers(r, submission):
-    tolerance, manual, after, text, answer, tolerances, answers, similarity, ignorecase = float(
-        r.get('tolerance', 0)), r.get('manual'), r.get('after'), r.get(
-            'text'), r.get('answer'), r.get('tolerances'), r.get(
-                'answers'), r.get('similarity'), r.get('ignorecase')
+    tolerance, manual, after, text, answer, tolerances, answers, similarity, ignorecase = r.get(
+        'tolerance'), r.get('manual'), r.get('after'), r.get('text'), r.get(
+            'answer'), r.get('tolerances'), r.get('answers'), r.get(
+                'similarity'), r.get('ignorecase')
 
     if tolerance is None and tolerances is None and text is None:
         return
+
+    tolerance = float(tolerance)
 
     for c in getComments(submission):
         result = True

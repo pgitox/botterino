@@ -22,7 +22,7 @@ It will reply with 'x' or '+correct' to any comments on your round automatically
     `botterino-config/praw.ini`; see `sample-praw.ini` for an example
     1. Give app any name you choose, such as 'botterino'
     2. Choose 'script' as app type
-    3. Fill in 'redirect URI' with `http://localhost:8080` (This is irrelevant but it's a required field)
+    3. Fill in 'redirect URI' with `http://localhost:8080` (This is irrelevant unless OAuth2 is used,but it's a required field)
     4. Once created, you'll have a 'secret', copy/paste that as `client_secret` in botterino-config/praw.ini
     5. You'll also have a less obvious client id, in the top left under the app name and the words 'personal use script' - copy/paste that into `client_id` in praw.ini
 4. Fill out the rest of 'botterino-config/praw.ini' with your Reddit username/password as well as anything you want for `user_agent`

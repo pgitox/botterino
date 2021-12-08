@@ -19,7 +19,7 @@ It will reply with 'x' or '+correct' to any comments on your round automatically
 2. Install the bot
     1. open a terminal or command prompt window and type the following command: `pip install botterino`
 3. You must [create a Reddit app](https://www.reddit.com/prefs/apps/) and add authentication details in
-    `botterino-config/praw.ini`; see `sample-praw.ini` for an example
+    `botterino-config/praw.ini`; see `sample-praw.ini` (on github) for an example
     1. Give app any name you choose, such as 'botterino'
     2. Choose 'script' as app type
     3. Fill in 'redirect URI' with `http://localhost:8080` (This is irrelevant unless OAuth2 is used,but it's a required field)

@@ -44,6 +44,7 @@ try:
     print(f'{fg.green}Successfully logged into reddit as {reddit.user.me()}')
 except exceptions.OAuthException:
     try:
+        print(f'{fg.yellow}Unable to login with username/password. If your account has 2fa continue in browser. Otherwise check {botfiles.prawconfig}')
         os.chdir(botfiles.botconfig)
         reddit = praw.Reddit(
             'botterino', redirect_uri='http://localhost:8080')

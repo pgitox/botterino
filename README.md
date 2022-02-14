@@ -55,6 +55,20 @@ This is useful for cases where
 1. You post manually and decide you would like bot to host
 2. Bot posts for you but crashes during hosting for some reason
 
+### Hints:
+Botterino can schedule hints and post them autmoatically.
+If the file `botterino-config/hints.txt` contains content,
+its content will be posted to the currently hosted round as a hint
+at the time specified by the user, and then the file is cleared.
+Default hint times can be specified
+in `botterino-config/config.ini`.
+The default value is `hints=[25,45]`.
+The default hint list can be overridden per round by adding the field
+`hints: [10, 20,30]` as a new field in rounds.yaml.
+Hint times are in minutes and are integers.
+Hints at hour boundaries do not need to be specified. If the
+hint file contains text it will be posted automatically at 60,120,180 etc...
+
 #### Steps
 1. Will use the top round in rounds.yaml
     1. `url` field should be omitted

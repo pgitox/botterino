@@ -1,11 +1,12 @@
 from geopy.distance import distance
 from geopy.point import Point
-from .config import donotreply, correctMessage, incorrectMessage, reddit, username, pg
+from .config import donotreply, correctMessage, incorrectMessage, reddit, username, pg, botfiles
 from itertools import permutations
 import re
 from sty import fg
 from .Utils.utils import decimal, getComments, getDistance, randomColor, randomColorWithAuthor, MAPS_URL
 from difflib import SequenceMatcher
+import time
 
 def withinTolerance(guess, answer, tolerance):
     return distance(guess, answer).m <= tolerance
@@ -56,11 +57,34 @@ def checkText(guess, answer, tolerance, ignorecase):
     print(f'{randomColorWithAuthor(guesser)}{guesser}\'s guess was {round(similarity * 100, 3)}% similar to the correct answer')
     return similarity >= tolerance
 
+def postHint(submission, time):
+    with open(botfiles.hintfile, 'r') as F:
+        hintText = F.read()
+    if not hintText:
+        print(f'{fg.yellow}Skipping {time}m hint: hintfile is empty')
+        return
+    hint = submission.reply(f'Hint({time}m): {hintText}')
+    print(f'{fg.green}Posted hint ({time}m) to https://reddit.com{hint.permalink}')
+    open(botfiles.hintfile, 'w').close()
+
+def checkHints(hints, submission):
+    hints += [60, 120, 180, 240]
+    hints = sorted(list(set(hints)))
+    while hints:
+        top = hints[0]
+        duration = int(time.time() - submission.created_utc)
+        duration = duration//60
+        if duration >= top:
+            postHint(submission, duration)
+            hints.pop(0)
+        time.sleep(10)
+        pass
+
 def checkAnswers(r, submission):
-    tolerance, manual, after, text, answer, tolerances, answers, similarity, ignorecase = r.get(
-        'tolerance'), r.get('manual'), r.get('after'), r.get('text'), r.get(
+    tolerance, manual, text, answer, tolerances, answers, similarity, ignorecase, hints, = r.get(
+        'tolerance'), r.get('manual'), r.get('text'), r.get(
             'answer'), r.get('tolerances'), r.get('answers'), r.get(
-                'similarity'), r.get('ignorecase')
+                'similarity'), r.get('ignorecase'), r.get('hints', [])
 
     if tolerance is None and tolerances is None and text is None:
         return

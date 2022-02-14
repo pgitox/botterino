@@ -1,11 +1,12 @@
-from .config import pg, username
+from .config import pg, username, hints
 from .posterino import submitRound
-from .hosterino import checkAnswers
+from .hosterino import checkAnswers, checkHints
 from .Utils.utils import waitForApproval, approved, postDelay, randomColor
 from .Loader.loader import getRound
 from sty import fg
 from importlib.metadata import version
 from update_checker import UpdateChecker
+from threading import Thread
 import time
 
 v = version('botterino')
@@ -31,23 +32,35 @@ def checkType(r):
         types.append('automatic')
     return ','.join(types)
 
-while True:
-    print(f'{fg.yellow}Waiting for {username} to win a round... 🐌')
-    waitForApproval()
-    print(f'{fg.blue}Congrats on a well deserved win {username}! ⭐')
-    r = getRound()
-    while not r:
-        print(f'{fg.red}No rounds in round file! checking again in 10s')
-        time.sleep(10)
+def main():
+    while True:
+        print(f'{fg.yellow}Waiting for {username} to win a round... 🐌')
+        waitForApproval()
+        print(f'{fg.blue}Congrats on a well deserved win {username}! ⭐')
         r = getRound()
-    submission = submitRound(r)
-    print(f'{randomColor()}Your round was posted to https://reddit.com{submission.permalink}')
-    print(f'{fg.magenta}Round \'{r["title"]}\' posted in {postDelay()}s')
-    print(f'{fg.cyan}Checking Answers: {checkType(r)}...')
-    checkAnswers(r, submission)
-    while approved():
-        continue
-    after = r.get('after')
-    if after:
-        submission.reply(after)
-        print(f'{randomColor()}Posted your message after the round: {after}')
+        while not r:
+            print(f'{fg.red}No rounds in round file! checking again in 10s')
+            time.sleep(10)
+            r = getRound()
+        submission = submitRound(r)
+        print(f'{randomColor()}Your round was posted to https://reddit.com{submission.permalink}')
+        print(f'{fg.magenta}Round \'{r["title"]}\' posted in {postDelay()}s')
+        print(f'{fg.cyan}Checking Answers: {checkType(r)}...')
+        if r.get('hints'):
+            hints = r.get('hints')
+        CheckAnswers = Thread(target=checkAnswers, args=(r, submission))
+        CheckHints = Thread(target=checkHints, args=(hints, submission))
+        CheckAnswers.start()
+        CheckHints.start()
+        CheckAnswers.join()
+        CheckHints.join()
+        while approved():
+            continue
+        after = r.get('after')
+        if after:
+            submission.reply(after)
+            print(f'{randomColor()}Posted your message after the round: {after}')
+
+if __name__ == 'botterino.botterino':
+    main()
+

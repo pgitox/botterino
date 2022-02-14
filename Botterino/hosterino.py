@@ -68,6 +68,7 @@ def postHint(submission, time):
     open(botfiles.hintfile, 'w').close()
 
 def checkHints(hints, submission):
+    hints = list(hints)
     hints += [60, 120, 180, 240]
     hints = sorted(list(set(hints)))
     while hints:

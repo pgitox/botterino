@@ -46,7 +46,7 @@ def main():
         print(f'{randomColor()}Your round was posted to https://reddit.com{submission.permalink}')
         print(f'{fg.magenta}Round \'{r["title"]}\' posted in {postDelay()}s')
         print(f'{fg.cyan}Checking Answers: {checkType(r)}...')
-        H = hints if not r.get('hints') else r.get(hints)
+        H = hints if not r.get('hints') else r.get('hints')
         CheckAnswers = Thread(target=checkAnswers, args=(r, submission))
         CheckHints = Thread(target=checkHints, args=(H, submission))
         CheckAnswers.start()

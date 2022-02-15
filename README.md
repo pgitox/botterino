@@ -55,6 +55,11 @@ This is useful for cases where
 1. You post manually and decide you would like bot to host
 2. Bot posts for you but crashes during hosting for some reason
 
+#### Steps
+1. Will use the top round in rounds.yaml
+    1. `url` field should be omitted
+2. Run with `python -m botterino.failure`
+
 ### Hints:
 Botterino can schedule hints and post them autmoatically.
 If the file `botterino-config/hints.txt` contains content,
@@ -68,11 +73,6 @@ The default hint list can be overridden per round by adding the field
 Hint times are in minutes and are integers.
 Hints at hour boundaries do not need to be specified. If the
 hint file contains text it will be posted automatically at 60,120,180 etc...
-
-#### Steps
-1. Will use the top round in rounds.yaml
-    1. `url` field should be omitted
-2. Run with `python -m botterino.failure`
 
 ---
 

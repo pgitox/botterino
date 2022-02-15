@@ -72,6 +72,10 @@ def checkHints(hints, submission):
     hints += [60, 120, 180, 240]
     hints = sorted(list(set(hints)))
     while hints:
+        if not submission.link_flair_text:
+            continue
+        if 'UNSOLVED' not in submission.link_flair_text:
+            return
         top = hints[0]
         duration = int(time.time() - submission.created_utc)
         duration = duration//60

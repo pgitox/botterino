@@ -4,7 +4,7 @@ from .config import donotreply, correctMessage, incorrectMessage, reddit, userna
 from itertools import permutations
 import re
 from sty import fg
-from .Utils.utils import decimal, getComments, getDistance, randomColor, randomColorWithAuthor, MAPS_URL
+from .Utils.utils import approved, decimal, getComments, getDistance, randomColor, randomColorWithAuthor, MAPS_URL
 from difflib import SequenceMatcher
 import time
 
@@ -61,7 +61,7 @@ def postHint(submission, time):
     with open(botfiles.hintfile, 'r') as F:
         hintText = F.read()
     if not hintText:
-        print(f'{fg.yellow}Skipping {time}m hint: hintfile is empty')
+        print(f'{fg.yellow}Skipping {time}m hint: hints.txt is empty')
         return
     hint = submission.reply(f'Hint({time}m): {hintText}')
     print(f'{fg.green}Posted hint ({time}m) to https://reddit.com{hint.permalink}')
@@ -71,11 +71,7 @@ def checkHints(hints, submission):
     hints = list(hints)
     hints += [60, 120, 180, 240]
     hints = sorted(list(set(hints)))
-    while hints:
-        if not submission.link_flair_text:
-            continue
-        if 'UNSOLVED' not in submission.link_flair_text:
-            return
+    while hints and approved():
         top = hints[0]
         duration = int(time.time() - submission.created_utc)
         duration = duration//60

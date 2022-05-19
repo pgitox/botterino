@@ -61,6 +61,9 @@ def postDelay():
 
     return data['round'].get('postDelay', -1)
 
+def hyperlink(alias, url):
+    return f'\u001b]8;;{url}\u001b\\{alias}\u001b]8;;\u001b\\'
+
 def getRoundPrefix():
     r = requests.get('https://api.picturegame.co/current')
     roundnum = int(json.loads(r.content)['round']['roundNumber']) + 1

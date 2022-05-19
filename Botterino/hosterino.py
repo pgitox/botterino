@@ -4,7 +4,7 @@ from .config import donotreply, correctMessage, incorrectMessage, reddit, userna
 from itertools import permutations
 import re
 from sty import fg
-from .Utils.utils import approved, decimal, getComments, getDistance, randomColor, randomColorWithAuthor, MAPS_URL
+from .Utils.utils import approved, decimal, getComments, getDistance, randomColor, randomColorWithAuthor, MAPS_URL, hyperlink
 from difflib import SequenceMatcher
 import time
 
@@ -44,7 +44,11 @@ def checkCoordinates(guess, answer, tolerance):
     error = round(error, 2)
     mapslink = MAPS_URL.format(point.latitude, point.longitude)
     color = fg.green if error <= tolerance else randomColorWithAuthor(guesser)
-    print(f'{color}{guesser}\'s guess {mapslink} was {error} meters off')
+    commentlink = f'https://reddit.com/{guess.context}'
+    if error < 1000:
+        print(f'{color}{guesser}\'s {hyperlink("guess", commentlink)} was {error}m {hyperlink("off", mapslink)}')
+    else:
+        print(f'{color}{guesser}\'s {hyperlink("guess", commentlink)} was {round(error/1000,2)}km {hyperlink("off", mapslink)}')
     return error <= tolerance
 
 def checkText(guess, answer, tolerance, ignorecase):

@@ -43,7 +43,8 @@ def checkCoordinates(guess, answer, tolerance):
         return 'ignore'
     error = round(error, 2)
     mapslink = MAPS_URL.format(point.latitude, point.longitude)
-    print(f'{randomColorWithAuthor(guesser)}{guesser}\'s guess {mapslink} was {error} meters off')
+    color = fg.green if error <= tolerance else randomColorWithAuthor(guesser)
+    print(f'{color}{guesser}\'s guess {mapslink} was {error} meters off')
     return error <= tolerance
 
 def checkText(guess, answer, tolerance, ignorecase):
@@ -122,5 +123,5 @@ def checkAnswers(r, submission):
                 plusCorrect = c.reply(correctMessage)
                 guesser = c.author.name
                 print(
-                    f'{randomColorWithAuthor(guesser)}Corrected {guesser} in {plusCorrect.created_utc - c.created_utc}s')
+                    f'{fg.green}Corrected {guesser} in {plusCorrect.created_utc - c.created_utc}s')
                 break

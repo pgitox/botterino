@@ -11,7 +11,7 @@ import requests
 import json
 import time
 import warnings
-
+import random
 
 decimal = re.compile("""([-+]?\d{1,2}[.]\d+),\s*([-+]?\d{1,3}[.]\d+)""")
 
@@ -27,13 +27,14 @@ everything_else = re.compile(
 
 MAPS_URL = 'https://maps.google.com/maps?t=k&q=loc:{},{}'
 
-badColors = [0, 15, 16] + list(range(231,256))
+badColors = [0, 16, 17, 18, 22, 52, 88, 90] + list(range(232,256))
 
 def randomColorWithAuthor(author):
-    color = abs(hash(author)) % 256
+    seed = hash(author)
+    random.seed(seed)
+    color = randrange(256)
     while color in badColors:
-        author += '*'
-        color = abs(hash(author)) % 256
+        color = (color + 1) % 256
     return fg(color)
 
 def randomColor():

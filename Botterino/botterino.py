@@ -34,18 +34,18 @@ def checkType(r):
 
 def main():
     while True:
-        print(f'{fg.yellow}Waiting for {username} to win a round... 🐌')
+        print(f'{fg.yellow}Waiting for {username} to win a round... 🐌', end=f'{fg.rs}\n')
         waitForApproval()
-        print(f'{fg.blue}Congrats on a well deserved win {username}! ⭐')
+        print(f'{fg.blue}Congrats on a well deserved win {username}! ⭐', end=f'{fg.rs}\n')
         r = getRound()
         while not r:
             print(f'{fg.red}No rounds in round file! checking again in 10s')
             time.sleep(10)
             r = getRound()
         submission = submitRound(r)
-        print(f'{randomColor()}Your round was posted to https://reddit.com{submission.permalink}')
-        print(f'{fg.magenta}Round \'{r["title"]}\' posted in {postDelay()}s')
-        print(f'{fg.cyan}Checking Answers: {checkType(r)}...')
+        print(f'{randomColor()}Your round was posted to https://reddit.com{submission.permalink}', end=f'{fg.rs}\n')
+        print(f'{fg.magenta}Round \'{r["title"]}\' posted in {postDelay()}s', end=f'{fg.rs}\n')
+        print(f'{fg.cyan}Checking Answers: {checkType(r)}...{fg.rs}', end=f'{fg.rs}\n')
         H = hints if not r.get('hints') else r.get('hints')
         CheckAnswers = Thread(target=checkAnswers, args=(r, submission))
         CheckHints = Thread(target=checkHints, args=(H, submission))
@@ -58,7 +58,7 @@ def main():
         after = r.get('after')
         if after:
             submission.reply(after)
-            print(f'{randomColor()}Posted your message after the round: {after}')
+            print(f'{randomColor()}Posted your message after the round: {after}', end=f'{fg.rs}\n')
 
 if __name__ == 'botterino.botterino':
     main()

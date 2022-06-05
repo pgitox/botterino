@@ -17,7 +17,7 @@ def checkMultipleCoordinates(guess, answers, tolerances):
     match = re.findall(decimal, guess.body)
     if len(match) != len(answers):
         # TODO print a message here
-        print(f'{randomColorWithAuthor(guesser)}{guesser}\'s guess {guess.body} was incorrect')
+        print(f'{randomColorWithAuthor(guesser)}{guesser}\'s guess {guess.body} was incorrect', end=f'{fg.rs}\n')
         return False
     try:
         points = [Point(f'{lat},{lon}') for lat, lon in match]
@@ -39,16 +39,21 @@ def checkCoordinates(guess, answer, tolerance):
     errorAndPoint = getDistance(guess.body, answer)
     error, point = errorAndPoint if errorAndPoint else (None, None)
     if error is None:
-        print(f"{randomColorWithAuthor(guesser)}Could not find a coordinate in guess '{guess.body}' by {guesser}")
+        print(f"{randomColorWithAuthor(guesser)}Could not find a coordinate in guess '{guess.body}' by {guesser}", end=f'{fg.rs}\n')
         return 'ignore'
     error = round(error, 2)
     mapslink = MAPS_URL.format(point.latitude, point.longitude)
     color = fg.green if error <= tolerance else randomColorWithAuthor(guesser)
-    commentlink = f'https://reddit.com/{guess.context}'
+    pl = ''
+    if hasattr(guess, 'context'):
+        pl = guess.context
+    elif hasattr(guess, 'permalink'):
+        pl = guess.permalink
+    commentlink = f'https://reddit.com{pl}'
     if error < 1000:
-        print(f'{color}{guesser}\'s {hyperlink("guess", commentlink)} was {error}m {hyperlink("off", mapslink)}')
+        print(f'{color}{guesser}\'s {hyperlink("guess", commentlink)} was {error}m {hyperlink("off", mapslink)}', end=f'{fg.rs}\n')
     else:
-        print(f'{color}{guesser}\'s {hyperlink("guess", commentlink)} was {round(error/1000,2)}km {hyperlink("off", mapslink)}')
+        print(f'{color}{guesser}\'s {hyperlink("guess", commentlink)} was {round(error/1000,2)}km {hyperlink("off", mapslink)}', end=f'{fg.rs}\n')
     return error <= tolerance
 
 def checkText(guess, answer, tolerance, ignorecase):
@@ -59,7 +64,7 @@ def checkText(guess, answer, tolerance, ignorecase):
         text,answer = text.lower(), answer.lower()
 
     similarity = SequenceMatcher(None, text, answer).ratio()
-    print(f'{randomColorWithAuthor(guesser)}{guesser}\'s guess was {round(similarity * 100, 3)}% similar to the correct answer')
+    print(f'{randomColorWithAuthor(guesser)}{guesser}\'s guess was {round(similarity * 100, 3)}% similar to the correct answer', end=f'{fg.rs}\n')
     return similarity >= tolerance
 
 def postHint(submission, time):
@@ -106,7 +111,7 @@ def checkAnswers(r, submission):
         elif tolerances:
             tolerances = [float(t) for t in r['tolerances']]
             if len(answers) != len(tolerances):
-                print('{fg.red}Refusing to check answers, number of tolerances must equal number of answers.')
+                print('{fg.red}Refusing to check answers, number of tolerances must equal number of answers.', end=f'{fg.rs}\n')
             result = result and checkMultipleCoordinates(c, answers, tolerances)
 
         if text and similarity is None:
@@ -122,10 +127,10 @@ def checkAnswers(r, submission):
             c.reply(incorrectMessage)
         if result:
             if manual:
-                print(f"{randomColor()}Guess '{c.body}' looks correct, but you will have to check it out.")
+                print(f"{randomColor()}Guess '{c.body}' looks correct, but you will have to check it out.", end=f'{fg.rs}\n')
             else:
                 plusCorrect = c.reply(correctMessage)
                 guesser = c.author.name
                 print(
-                    f'{fg.green}Corrected {guesser} in {plusCorrect.created_utc - c.created_utc}s')
+                    f'{fg.green}Corrected {guesser} in {plusCorrect.created_utc - c.created_utc}s', end=f'{fg.rs}\n')
                 break

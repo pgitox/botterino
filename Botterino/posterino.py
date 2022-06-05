@@ -11,6 +11,6 @@ def submitRound(r):
         time.sleep(15)
         submission.reply(message)
 
-        print(f'{randomColor()}Message posted to thread: {message}')
+        print(f'{randomColor()}Message posted to thread: {message}', end=f'{fg.rs}\n')
 
     return submission

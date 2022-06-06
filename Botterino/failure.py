@@ -13,7 +13,7 @@ while not r:
     r = loader.getRound()
 
 submission = next(iter(pg.new()))
-print(f'{randomColor()}Checking answers on https://reddit.com{submission.permalink}')
+print(f'{randomColor()}Checking answers on https://reddit.com{submission.permalink}', end=f'{fg.rs}\n')
 checkAnswers(r, submission)
 after = r.get('after')
 if after:

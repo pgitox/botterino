@@ -31,7 +31,7 @@ It will reply with 'x' or '+correct' to any comments on your round automatically
 
 ## Usage
 
-- add round(s) in botterino-config/rounds/rounds.yaml. See sample-rounds.yaml on botterino github page for information on round syntax
+- add round(s) in botterino-config/rounds/rounds.yaml. See sample-rounds.yaml on botterino github page for information on round syntax and types of features supported.
 - run with `python -m botterino`
 
 ### Normal hosting

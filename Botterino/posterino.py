@@ -1,10 +1,29 @@
+import math
 from .config import pg
-from .Utils.utils import randomColor, getRoundPrefix
+from .Utils.utils import randomColor, getRoundPrefix, submissions
 from sty import fg
 import time
+import re
+
+def getSeriesPrefix(name):
+    if not name:
+        return ''
+    name = name.strip()
+    definite = re.compile(f'\[\s*{name}\s*#?\s*(\d+)\s*\]')
+    indefinite = re.compile(f'\[\s*{name}\s*#?\s*(\d+)\s*\/\s*(\d+)\s*\]')
+    for title in submissions():
+        defmatch = re.search(definite, title)
+        if defmatch:
+            return f'[{name} #{int(defmatch.group(1)) + 1}]'
+        indefmatch = re.search(indefinite, title)
+        if indefmatch:
+            return f'[{name} #{int(indefmatch.group(1)) + 1}/{indefmatch.group(2)}]'
+    return f'[{name} #1]'
 
 def submitRound(r):
-    submission = pg.submit(title=f'{getRoundPrefix()} {r["title"]}',
+    series_prefix = getSeriesPrefix(r.get('series'))
+    title = f'{getRoundPrefix()} {series_prefix} {r["title"]}'
+    submission = pg.submit(title=title,
                            url=r['url'].strip())
 
     message = r.get('message')

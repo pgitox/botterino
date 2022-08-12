@@ -1,9 +1,9 @@
 
 # rounds use yaml syntax
 # indentation must be two spaces
+# use http://www.yamllint.com/ to check your round file syntax! if something is wrong the program will crash!
 
 # post a round but do not reply to any comments (host everything yourself)
-
 vegas_round:
   title: 'What are my coordinates?'
   url: imgur.com/notarealurl
@@ -37,6 +37,7 @@ text_round:
 
 
 # check text (case sensitive)
+# the ignorecase field is implicitly true if unspecified
 text_round:
   title: foo
   url: imgur.com/abcd
@@ -119,3 +120,25 @@ round_2:
 
 # rounds.yaml can be edited to add new rounds while the bot is running
 # when rounds are loaded, they are removed from rounds.yaml saved to a file called archive.yaml
+
+# Automatically number rounds of a series
+# Rules explained below
+Series:
+  title: Coordinates of this bridge?
+  series: Trains on Bridges
+  answer: 42.4343543,45.434543
+  tolerance: 32
+  url: https://i.imgur.com/7z48TYm.jpg
+
+# Botterino will search through titles of your most recent 100 pg rounds for the string given in `series`
+# titles must match the following format: [<series> #N] or [<series> #N/N] (tolerant of whitespce, # optional)
+# if a match is found, the series number will be incremented
+# in the above example, if a previous round was named:
+# a. [Round <Round Number>] [Trains on Bridges #19] Coordinates of this bridge?
+# b. [Round <Round Number>] [Trains on Bridges #19/350] Coordinates of this bridge?
+# c. <There was no match found>
+# the resulting title becomes:
+#  a. [Round <Round Number>] [Trains on Bridges #20] Coordinates of this bridge?
+#  b. [Round <Round Number>] [Trains on Bridges #20/350] Coordinates of this bridge?
+#  c. [Round <Round Number>] [Trains on Bridges #1]
+# if no match is found this round will be labeled as the first round in the series

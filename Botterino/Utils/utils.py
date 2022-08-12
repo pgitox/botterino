@@ -29,6 +29,16 @@ MAPS_URL = 'https://maps.google.com/maps?t=k&q=loc:{},{}'
 
 badColors = [0, 16, 17, 18, 22, 52, 88, 90] + list(range(232,256))
 
+def submissions():
+    '''
+    returns a generator of titles of submissions to pg
+    newest submissions first
+    '''
+    for submission in reddit.user.me().submissions.new(limit=200):
+        if submission.subreddit != pg:
+            continue
+        yield submission.title
+
 def randomColorWithAuthor(author):
     seed = hash(author)
     random.seed(seed)

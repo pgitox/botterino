@@ -9,6 +9,15 @@ yaml.allow_duplicate_keys = True
 def dump(data, file):
     with open(file, 'w', encoding='utf-8') as f:
         yaml.dump(data, f)
+        
+def append(data, file):
+    with open(file, 'r', encoding='utf-8') as f:
+        x = yaml.load(f)
+    if not x:
+        dump(data, file)
+        return
+    x.update(data)
+    dump(x, file)
 
 def load(file):
     with open(file, 'r', encoding='utf-8') as f:

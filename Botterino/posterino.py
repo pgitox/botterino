@@ -9,8 +9,8 @@ def getSeriesPrefix(name):
     if not name:
         return ''
     name = name.strip()
-    definite = re.compile(f'\[\s*{name}\s*#?\s*(\d+)\s*\]')
-    indefinite = re.compile(f'\[\s*{name}\s*#?\s*(\d+)\s*\/\s*(\d+)\s*\]')
+    definite = re.compile(f'\s*{name}\s*#?\s*(\d+)\s*')
+    indefinite = re.compile(f'\s*{name}\s*#?\s*(\d+)\s*\/\s*(\d+)\s*')
     for title in submissions():
         defmatch = re.search(definite, title)
         if defmatch:

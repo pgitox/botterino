@@ -131,10 +131,10 @@ Series:
   url: https://i.imgur.com/7z48TYm.jpg
 
 # Botterino will search through titles of your most recent 100 pg rounds for the string given in `series`
-# titles must match the following format: [<series> #N] or [<series> #N/N] (tolerant of whitespce, # optional)
+# titles must match the following format: [<series> #N] or [<series> #N/N] (tolerant of whitespce, # optional, no brackets optional)
 # if a match is found, the series number will be incremented
 # in the above example, if a previous round was named:
-# a. [Round <Round Number>] [Trains on Bridges #19] Coordinates of this bridge?
+# a. [Round <Round Number>] Trains on Bridges #19 Coordinates of this bridge?
 # b. [Round <Round Number>] [Trains on Bridges #19/350] Coordinates of this bridge?
 # c. <There was no match found>
 # the resulting title becomes:

@@ -9,15 +9,15 @@ def getSeriesPrefix(name):
     if not name:
         return ''
     name = name.strip()
-    definite = re.compile(f'\s*{name}\s*#?\s*(\d+)\s*')
-    indefinite = re.compile(f'\s*{name}\s*#?\s*(\d+)\s*\/\s*(\d+)\s*')
+    indefinite = re.compile(f'\s*{name}\s*#?\s*(\d+)\s*')
+    definite = re.compile(f'\s*{name}\s*#?\s*(\d+)\s*\/\s*(\d+)\s*')
     for title in submissions():
         defmatch = re.search(definite, title)
         if defmatch:
-            return f'[{name} #{int(defmatch.group(1)) + 1}]'
+            return f'[{name} #{int(defmatch.group(1)) + 1}/{defmatch.group(2)}]'
         indefmatch = re.search(indefinite, title)
         if indefmatch:
-            return f'[{name} #{int(indefmatch.group(1)) + 1}/{indefmatch.group(2)}]'
+            return f'[{name} #{int(indefmatch.group(1)) + 1}]'
     return f'[{name} #1]'
 
 def submitRound(r):

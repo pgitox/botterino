@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from .config import roundfile
 from .Loader.loader import append, load
+from sty import fg
 
 root = Tk()
 root.title("Botterino")
@@ -37,11 +38,11 @@ def append_entry():
     manual_input = bool(manual.get())
     data = {}
     inner = {}
-    if title_input: 
+    if title_input:
         inner["title"] = title_input
     if answer_input:
         inner["answer"] = answer_input
-    if tolerance_input: 
+    if tolerance_input:
         inner["tolerance"] = tolerance_input
     if url_input:
         inner["url"] = url_input
@@ -50,8 +51,9 @@ def append_entry():
     data[name_input] = inner
     append(data, roundfile)
     clear_entries()
+    print(f'{fg.green}Added round {name_input} to rounds.yaml{fg.rs}')
 
-def clear_entries():  
+def clear_entries():
     name_entry.delete(0, END)
     title_entry.delete(0, END)
     answer_entry.delete(0, END)

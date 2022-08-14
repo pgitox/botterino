@@ -9,17 +9,14 @@ root.title("Botterino")
 def append_entry():
     name_input = str(name.get())
     if not name_input:
-        print("Name is missing")
         error_text.set("Name is missing")
         return
     d = load(roundfile)
-    if name_input in d:
-        print("Name is not unique")
+    if d and name_input in d:
         error_text.set("Name is not unique")
         return
     title_input = title.get()
     if not title_input:
-        print("Title is missing")
         error_text.set("Title is missing")
         return
     answer_input = answer.get()
@@ -31,12 +28,10 @@ def append_entry():
             error_text.set("Tolerance must be a number")
             return
     if tolerance_input and not answer_input:
-        print("Answer missing when tolerance is present")
         error_text.set("Answer missing when tolerance is present")
         return
     url_input = url.get()
     if not url_input:
-        print("URL is missing")
         error_text.set("URL is missing")
         return
     manual_input = bool(manual.get())

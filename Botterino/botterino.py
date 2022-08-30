@@ -32,10 +32,13 @@ def checkType(r):
         types.append('automatic')
     return ','.join(types)
 
-def main():
+def main(stop=None):
     while True:
         print(f'{fg.yellow}Waiting for {username} to win a round... 🐌', end=f'{fg.rs}\n')
-        waitForApproval()
+        stopped = waitForApproval(stop)
+        if stopped or stop:
+            print(f'{fg.red}Stopped botterino{fg.rs}')
+            return
         print(f'{fg.blue}Congrats on a well deserved win {username}! ⭐', end=f'{fg.rs}\n')
         r = getRound()
         while not r:
@@ -59,7 +62,3 @@ def main():
         if after:
             submission.reply(after)
             print(f'{randomColor()}Posted your message after the round: {after}', end=f'{fg.rs}\n')
-
-if __name__ == 'botterino.botterino':
-    main()
-

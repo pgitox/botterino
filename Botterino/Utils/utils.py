@@ -85,9 +85,11 @@ def approved():
 
 @retry
 @Halo(spinner='dots', color='yellow')
-def waitForApproval():
-    while not approved():
+def waitForApproval(stop=None):
+    while not approved() and not stop:
         continue
+    if stop:
+        return True
 
 def getDistance(guess, answer):
     match = re.search(decimal_or_DMS, guess)

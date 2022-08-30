@@ -34,6 +34,10 @@ It will reply with 'x' or '+correct' to any comments on your round automatically
 - add round(s) in botterino-config/rounds/rounds.yaml. See sample-rounds.yaml on botterino github page for information on round syntax and types of features supported.
 - run with `python -m botterino`
 
+## UI:
+- The ui can be launched with `python -m botterino.ui`
+- Through the ui you can automatically populate rounds.yaml and start/stop the bot
+
 ### Normal hosting
 
 Rounds are kept in the 'rounds/rounds.yaml' file, see 'sample.yaml' for some examples

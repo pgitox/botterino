@@ -2,10 +2,37 @@ from tkinter import *
 from tkinter import ttk
 from .config import roundfile
 from .Loader.loader import append, load
+from .botterino import main
 from sty import fg
+from threading import Thread
 
 root = Tk()
 root.title("Botterino")
+
+# Todo: place this in a sensible place
+class Stopper:
+    def __init__(self):
+        self.stopped = False
+    def __bool__(self):
+        return self.stopped
+    def stop(self):
+        self.stopped = True
+    def unstop(self):
+        self.stopped = False
+
+class Runner:
+    def __init__(self):
+        self.stopper = Stopper()
+        self.T = Thread(target=main, args=(self.stopper,))
+    def start(self):
+        self.stopper.unstop()
+        self.T.start()
+    def stop(self):
+        print('hi')
+        self.stopper.stop()
+        self.T = Thread(target=main, args=(self.stopper,))
+
+R = Runner()
 
 def append_entry():
     name_input = str(name.get())
@@ -64,11 +91,11 @@ def clear_entries():
 
 def start_botterino():
     #dummy function to start botterino
-    return
+    R.start()
 
 def stop_botterino():
     #dummy function to end botterino
-    return
+    R.stop()
 
 mainframe = ttk.Frame(root, padding="3 6 3 12")
 mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
@@ -119,3 +146,4 @@ for child in mainframe.winfo_children():
     child.grid_configure(padx=5, pady=2)
 
 root.mainloop()
+

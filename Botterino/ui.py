@@ -28,7 +28,6 @@ class Runner:
         self.stopper.unstop()
         self.T.start()
     def stop(self):
-        print('hi')
         self.stopper.stop()
         self.T = Thread(target=main, args=(self.stopper,))
 

@@ -38,12 +38,13 @@ debug = False
 roundfile = botfiles.rounds
 archivefile = botfiles.archive
 cwd = os.getcwd()
+#FIXME: clean this up
 try:
     os.chdir(botfiles.botconfig)
     reddit = praw.Reddit('botterino')
-    print(f'{fg.green}Successfully logged into reddit as {reddit.user.me()}', end=f'{fg.rs}\n')
-except exceptions.OAuthException:
-    try:
+    if reddit.user.me():
+        print(f'{fg.green}Successfully logged into reddit as {reddit.user.me()}', end=f'{fg.rs}\n')
+    else:
         print(f'{fg.yellow}Unable to login with username/password. If your account has 2fa continue in browser. Otherwise check {botfiles.prawconfig}', end=f'{fg.rs}\n')
         os.chdir(botfiles.botconfig)
         reddit = praw.Reddit(
@@ -70,11 +71,10 @@ except exceptions.OAuthException:
 
         refresh_token = reddit.auth.authorize(params["code"])
         send_message(client, "Refresh token: {}".format(refresh_token))
-
         print(refresh_token)
-    except Exception as e:
-        print(f'{fg.red}Unable to login to reddit. Please check {botfiles.prawconfig}', end=f'{fg.rs}\n')
-        print(f'{fg.red}{e}')
+        if not reddit.user.me():
+            print(f'{fg.red}Unable to login to reddit. Please check {botfiles.prawconfig}')
+            exit(1)
 except Exception as e:
     print(f'{fg.red}Unable to login to reddit. Please check {botfiles.prawconfig}')
     print(f'{fg.red}{e}')

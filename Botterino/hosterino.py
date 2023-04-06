@@ -102,7 +102,7 @@ def checkAnswers(r, submission):
 
     for c in getComments(submission):
         result = True
-        if tolerance:
+        if tolerance is not None:
             tolerance = float(tolerance)
             r = checkCoordinates(c, answer, tolerance)
             if r == 'ignore':

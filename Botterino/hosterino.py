@@ -1,12 +1,8 @@
 from geopy.distance import distance
 from geopy.point import Point
 from .config import (
-    donotreply,
     correctMessage,
     incorrectMessage,
-    reddit,
-    username,
-    pg,
     botfiles,
 )
 from itertools import permutations
@@ -23,6 +19,7 @@ from .Utils.utils import (
     hyperlink,
 )
 from difflib import SequenceMatcher
+from .Map.map import Map
 import time
 
 
@@ -45,13 +42,13 @@ def checkMultipleCoordinates(guess, answers, tolerances):
         points = [Point(f"{lat},{lon}") for lat, lon in match]
         points = permutations(points)
     except Exception as e:
-        print(f"{randomColor()}Something happened: ", e, "it probably does not matter")
+        print(f"{randomColor()}Something happened: ", e,
+              "it probably does not matter")
         return False
 
-    results = [
-        [withinTolerance(p, a, t) for p, a, t in zip(ps, answers, tolerances)]
-        for ps in points
-    ]
+    results = [[
+        withinTolerance(p, a, t) for p, a, t in zip(ps, answers, tolerances)
+    ] for ps in points]
     results = [all(r) for r in results]
     result = any(results)
     if not result:
@@ -61,7 +58,7 @@ def checkMultipleCoordinates(guess, answers, tolerances):
     return result
 
 
-def checkCoordinates(guess, answer, tolerance):
+def checkCoordinates(guess, answer, tolerance, map):
     guesser = guess.author.name
     answer = Point(answer)
     errorAndPoint = getDistance(guess.body, answer)
@@ -80,17 +77,23 @@ def checkCoordinates(guess, answer, tolerance):
         pl = guess.context
     elif hasattr(guess, "permalink"):
         pl = guess.permalink
-    commentlink = f"https://reddit.com{pl}"
+    commentLink = f"https://reddit.com{pl}"
     if error < 1000:
         print(
-            f'{color}{guesser}\'s {hyperlink("guess", commentlink)} was {error}m {hyperlink("off", mapslink)}',
+            f'{color}{guesser}\'s {hyperlink("guess", commentLink)} was {error}m {hyperlink("off", mapslink)}',
             end=f"{fg.rs}\n",
         )
     else:
         print(
-            f'{color}{guesser}\'s {hyperlink("guess", commentlink)} was {round(error/1000,2)}km {hyperlink("off", mapslink)}',
+            f'{color}{guesser}\'s {hyperlink("guess", commentLink)} was {round(error/1000,2)}km {hyperlink("off", mapslink)}',
             end=f"{fg.rs}\n",
         )
+
+    if map:
+        # TODO: try to give different users differnt colors
+        map.addPoint(point.latitude, point.longitude, guesser, error,
+                     commentLink, "red" if error > tolerance else "green")
+
     return error <= tolerance
 
 
@@ -116,7 +119,9 @@ def postHint(submission, time):
         print(f"{fg.yellow}Skipping {time}m hint: hints.txt is empty")
         return
     hint = submission.reply(f"Hint({time}m): {hintText}")
-    print(f"{fg.green}Posted hint ({time}m) to https://reddit.com{hint.permalink}")
+    print(
+        f"{fg.green}Posted hint ({time}m) to https://reddit.com{hint.permalink}"
+    )
     open(botfiles.hintfile, "w").close()
 
 
@@ -145,7 +150,6 @@ def checkAnswers(r, submission):
         answers,
         similarity,
         ignorecase,
-        hints,
     ) = (
         r.get("tolerance"),
         r.get("manual"),
@@ -155,8 +159,15 @@ def checkAnswers(r, submission):
         r.get("answers"),
         r.get("similarity"),
         r.get("ignorecase"),
-        r.get("hints", []),
     )
+
+    answerPlot = None
+    if answer and tolerance and not answers:
+        try:
+            answerPoint = Point(answer)
+            answerPlot = Map(answerPoint.latitude, answerPoint.longitude)
+        except Exception:
+            pass
 
     if tolerance is None and tolerances is None and text is None:
         return
@@ -165,7 +176,7 @@ def checkAnswers(r, submission):
         result = True
         if tolerance is not None:
             tolerance = float(tolerance)
-            r = checkCoordinates(c, answer, tolerance)
+            r = checkCoordinates(c, answer, tolerance, answerPlot)
             if r == "ignore":
                 continue
             result = result and r
@@ -176,7 +187,8 @@ def checkAnswers(r, submission):
                     "{fg.red}Refusing to check answers, number of tolerances must equal number of answers.",
                     end=f"{fg.rs}\n",
                 )
-            result = result and checkMultipleCoordinates(c, answers, tolerances)
+            result = result and checkMultipleCoordinates(
+                c, answers, tolerances)
 
         if text and similarity is None:
             continue
@@ -203,3 +215,13 @@ def checkAnswers(r, submission):
                     end=f"{fg.rs}\n",
                 )
                 break
+
+    # TODO: show the map on every guess instead of only when the round is over
+    if answerPlot:
+        answerPlot.saveMap()
+        outputFile = answerPlot.getFilePath()
+        if outputFile:
+            print(
+                f'{fg.green}Answers to your round plotted at {outputFile}{fg.rs}'
+            )
+            answerPlot.openMapInBrowser()

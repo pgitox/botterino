@@ -1,12 +1,11 @@
 import praw
 import os
 import sys
-from . import botfiles, correctMessage, incorrectMessage, hints
+from . import botfiles
 from sty import fg
 import random
 import webbrowser
 import socket
-from prawcore import exceptions
 
 
 def receive_connection():
@@ -55,7 +54,9 @@ try:
         os.chdir(botfiles.botconfig)
         reddit = praw.Reddit("botterino", redirect_uri="http://localhost:8080")
         state = str(random.randint(0, 65000))
-        scopes = ["identity", "history", "read", "edit", "submit", "privatemessages"]
+        scopes = [
+            "identity", "history", "read", "edit", "submit", "privatemessages"
+        ]
         url = reddit.auth.url(scopes, state, "permanent")
         print(
             "A window will be opened in the browser to complete the login process to reddit."
@@ -66,15 +67,15 @@ try:
         data = client.recv(1024).decode("utf-8")
         param_tokens = data.split(" ", 2)[1].split("?", 1)[1].split("&")
         params = {
-            key: value for (key, value) in [token.split("=") for token in param_tokens]
+            key: value
+            for (key, value) in [token.split("=") for token in param_tokens]
         }
 
         if state != params["state"]:
             send_message(
                 client,
                 "State mismatch. Expected: {} Received: {}".format(
-                    state, params["state"]
-                ),
+                    state, params["state"]),
             )
         elif "error" in params:
             send_message(client, params["error"])
@@ -88,7 +89,9 @@ try:
             )
             exit(1)
 except Exception as e:
-    print(f"{fg.red}Unable to login to reddit. Please check {botfiles.prawconfig}")
+    print(
+        f"{fg.red}Unable to login to reddit. Please check {botfiles.prawconfig}"
+    )
     print(f"{fg.red}{e}")
 finally:
     os.chdir(cwd)

@@ -7,13 +7,14 @@ from requests.exceptions import ConnectionError
 
 # from ..models import Logger
 
+
 def retry(action):
     def actionWithRetry(*args, **kwargs):
-        '''Perform the given action. If an exception is raised, retry every ten seconds
+        """Perform the given action. If an exception is raised, retry every ten seconds
 
         @param throwOnPayloadTooLarge boolean If a 413 error is caught, throw it instead of retrying (default False)
         Return the return value of the action, if any
-        '''
+        """
 
         failCount = 0
 
@@ -43,7 +44,9 @@ def retry(action):
                 return
 
             except APIException as e:
-                if e.error_type == "TOO_LONG" and kwargs.get('throwOnPayloadTooLarge', False):
+                if e.error_type == "TOO_LONG" and kwargs.get(
+                    "throwOnPayloadTooLarge", False
+                ):
                     # Logger.warn("Action failed with HTTP status 413, raising", { "action": action.__name__ })
                     raise e
 

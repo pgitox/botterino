@@ -13,25 +13,33 @@ root.title("Botterino")
 class Stopper:
     def __init__(self):
         self.stopped = False
+
     def __bool__(self):
         return self.stopped
+
     def stop(self):
         self.stopped = True
+
     def unstop(self):
         self.stopped = False
+
 
 class Runner:
     def __init__(self):
         self.stopper = Stopper()
         self.T = Thread(target=main, args=(self.stopper,))
+
     def start(self):
         self.stopper.unstop()
         self.T.start()
+
     def stop(self):
         self.stopper.stop()
         self.T = Thread(target=main, args=(self.stopper,))
 
+
 R = Runner()
+
 
 def append_entry():
     name_input = str(name.get())
@@ -77,7 +85,8 @@ def append_entry():
     data[name_input] = inner
     append(data, roundfile)
     clear_entries()
-    print(f'{fg.green}Added round {name_input} to rounds.yaml{fg.rs}')
+    print(f"{fg.green}Added round {name_input} to rounds.yaml{fg.rs}")
+
 
 def clear_entries():
     name_entry.delete(0, END)
@@ -88,13 +97,16 @@ def clear_entries():
     error_text.set("")
     manual.set(False)
 
+
 def start_botterino():
-    #dummy function to start botterino
+    # dummy function to start botterino
     R.start()
 
+
 def stop_botterino():
-    #dummy function to end botterino
+    # dummy function to end botterino
     R.stop()
+
 
 mainframe = ttk.Frame(root, padding="3 6 3 12")
 mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
@@ -110,7 +122,7 @@ ttk.Label(mainframe, text="Manual").grid(column=1, row=6, sticky=W)
 
 error_text = StringVar()
 error_label = ttk.Label(mainframe, foreground="red", textvariable=error_text)
-error_label.grid(column=1, row=7, sticky=(W,E))
+error_label.grid(column=1, row=7, sticky=(W, E))
 
 name = StringVar()
 name_entry = ttk.Entry(mainframe, width=50, textvariable=name)
@@ -136,13 +148,20 @@ manual = BooleanVar(value=False)
 manual_entry = ttk.Checkbutton(mainframe, variable=manual, onvalue=True, offvalue=False)
 manual_entry.grid(column=2, row=6, sticky=(W, E))
 
-ttk.Button(mainframe, text="Clear", command=clear_entries).grid(column=2, row=7, sticky=W)
-ttk.Button(mainframe, text="Submit", command=append_entry).grid(column=2, row=7, sticky=E)
-ttk.Button(mainframe, text="Start", command=start_botterino).grid(column=2, row=8, sticky=W)
-ttk.Button(mainframe, text="Stop", command=stop_botterino).grid(column=2, row=8, sticky=E)
+ttk.Button(mainframe, text="Clear", command=clear_entries).grid(
+    column=2, row=7, sticky=W
+)
+ttk.Button(mainframe, text="Submit", command=append_entry).grid(
+    column=2, row=7, sticky=E
+)
+ttk.Button(mainframe, text="Start", command=start_botterino).grid(
+    column=2, row=8, sticky=W
+)
+ttk.Button(mainframe, text="Stop", command=stop_botterino).grid(
+    column=2, row=8, sticky=E
+)
 
 for child in mainframe.winfo_children():
     child.grid_configure(padx=5, pady=2)
 
 root.mainloop()
-

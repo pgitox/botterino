@@ -4,6 +4,7 @@ from .Retry import retry
 
 POLL_LIMIT = 50
 
+
 class FifoSet:
     def __init__(self, size):
         self.size = size
@@ -19,16 +20,18 @@ class FifoSet:
         self._fifo.append(item)
         self._set.add(item)
 
+
 class CommentWrapper:
     def __init__(self, func1, func2):
         self.f1 = func1
         self.f2 = func2
+
     def __call__(self, *args, **kwargs):
         return itertools.chain(self.f1(*args, **kwargs), self.f2(*args, **kwargs))
 
 
 class RedditPoller:
-    def __init__(self, function, before = None):
+    def __init__(self, function, before=None):
         self.function = function
         self.seenNames = FifoSet(POLL_LIMIT * 1000)
         self.beforeName = before
@@ -48,4 +51,6 @@ class RedditPoller:
 
     @retry
     def _poll(self):
-        return reversed(list(self.function(limit = POLL_LIMIT, params = { "before": self.beforeName })))
+        return reversed(
+            list(self.function(limit=POLL_LIMIT, params={"before": self.beforeName}))
+        )

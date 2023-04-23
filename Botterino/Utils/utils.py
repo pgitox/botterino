@@ -25,19 +25,21 @@ everything_else = re.compile(
     """(^| )(-?\d{1,2}(\.\d+)?(?=\s*,?\s*)[\s,]+-?\d{1,3}(\.\d+)?|\d{1,2}(\.\d+°|°(\d{1,2}(\.\d+'|'(\d{1,2}(\.\d+)?\")?))?)[NS](?=\s*,?\s*)[\s,]+\d{1,3}(\.\d+°|°(\d{1,2}(\.\d+'|'(\d{1,2}(\.\d+)?\")?))?)[EW])"""
 )
 
-MAPS_URL = 'https://maps.google.com/maps?t=k&q=loc:{},{}'
+MAPS_URL = "https://maps.google.com/maps?t=k&q=loc:{},{}"
 
-badColors = [0, 16, 17, 18, 22, 52, 88, 90] + list(range(232,256))
+badColors = [0, 16, 17, 18, 22, 52, 88, 90] + list(range(232, 256))
+
 
 def submissions():
-    '''
+    """
     returns a generator of titles of submissions to pg
     newest submissions first
-    '''
+    """
     for submission in reddit.user.me().submissions.new(limit=200):
         if submission.subreddit != pg:
             continue
         yield submission.title
+
 
 def randomColorWithAuthor(author):
     seed = hash(author)
@@ -47,49 +49,56 @@ def randomColorWithAuthor(author):
         color = (color + 1) % 256
     return fg(color)
 
+
 def randomColor():
     color = randrange(256)
     while color in badColors:
         color = randrange(256)
     return fg(color)
 
+
 def postDelay():
     if debug:
         return -1
 
-    r = requests.get(f'{api}/current')
+    r = requests.get(f"{api}/current")
     data = json.loads(r.content)
     tries = 1
 
-    while data['round']['hostName'].lower() != username.lower():
+    while data["round"]["hostName"].lower() != username.lower():
         tries += 1
         if tries > 5:
             return -1
-        r = requests.get(f'{api}/current')
+        r = requests.get(f"{api}/current")
         data = json.loads(r.content)
         time.sleep(5)
 
-    return data['round'].get('postDelay', -1)
+    return data["round"].get("postDelay", -1)
+
 
 def hyperlink(alias, url):
-    return f'\u001b]8;;{url}\u001b\\{alias}\u001b]8;;\u001b\\'
+    return f"\u001b]8;;{url}\u001b\\{alias}\u001b]8;;\u001b\\"
+
 
 def getRoundPrefix():
-    r = requests.get(f'{api}/current')
-    roundnum = int(json.loads(r.content)['round']['roundNumber']) + 1
-    return f'[Round {roundnum}]'
+    r = requests.get(f"{api}/current")
+    roundnum = int(json.loads(r.content)["round"]["roundNumber"]) + 1
+    return f"[Round {roundnum}]"
+
 
 def approved():
     c = next(iter(pg.contributor()))
     return c and c.name.lower() == username.lower()
 
+
 @retry
-@Halo(spinner='dots', color='yellow')
+@Halo(spinner="dots", color="yellow")
 def waitForApproval(stop=None):
     while not approved() and not stop:
         continue
     if stop:
         return True
+
 
 def getDistance(guess, answer):
     match = re.search(decimal_or_DMS, guess)
@@ -115,8 +124,17 @@ def getComments(submission):
         continue
 
     for c in comments:
-        if hasattr(c, 'submission') and hasattr(c, 'author') and c.author and c.submission:
-            if c.author.name.lower() == username.lower() and '+correct' in c.body and not c.is_root:
+        if (
+            hasattr(c, "submission")
+            and hasattr(c, "author")
+            and c.author
+            and c.submission
+        ):
+            if (
+                c.author.name.lower() == username.lower()
+                and "+correct" in c.body
+                and not c.is_root
+            ):
                 return
             if not c.is_root:
                 continue

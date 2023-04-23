@@ -1,7 +1,7 @@
 import praw
 import os
 import sys
-from . import botfiles
+from . import botfiles, correctMessage, incorrectMessage, hints
 from sty import fg
 import random
 import webbrowser

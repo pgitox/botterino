@@ -1,4 +1,4 @@
-from ..config import pg, username, debug, reddit, donotreply
+from ..config import pg, username, debug, reddit, donotreply, api
 from ..RedditPoller.RedditPoller import RedditPoller, CommentWrapper
 from ..RedditPoller.Retry import retry
 from geopy.point import Point
@@ -57,7 +57,7 @@ def postDelay():
     if debug:
         return -1
 
-    r = requests.get('https://api.picturegame.co/current')
+    r = requests.get(f'{api}/current')
     data = json.loads(r.content)
     tries = 1
 
@@ -65,7 +65,7 @@ def postDelay():
         tries += 1
         if tries > 5:
             return -1
-        r = requests.get('https://api.picturegame.co/current')
+        r = requests.get(f'{api}/current')
         data = json.loads(r.content)
         time.sleep(5)
 
@@ -75,7 +75,7 @@ def hyperlink(alias, url):
     return f'\u001b]8;;{url}\u001b\\{alias}\u001b]8;;\u001b\\'
 
 def getRoundPrefix():
-    r = requests.get('https://api.picturega.me/current')
+    r = requests.get(f'{api}/current')
     roundnum = int(json.loads(r.content)['round']['roundNumber']) + 1
     return f'[Round {roundnum}]'
 

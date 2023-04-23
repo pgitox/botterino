@@ -92,3 +92,4 @@ donotreply = {
     'imreallycuriousbird',
 }
 
+api = 'https://api.picturega.me'

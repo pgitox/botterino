@@ -1,6 +1,7 @@
 import math
 from .config import pg
-from .Utils.utils import randomColor, getRoundPrefix, submissions
+from .Utils.utils import getRoundPrefix, submissions
+from .Utils.color import colormsg
 from sty import fg
 import time
 import re
@@ -32,6 +33,6 @@ def submitRound(r):
         time.sleep(15)
         submission.reply(message)
 
-        print(f"{randomColor()}Message posted to thread: {message}", end=f"{fg.rs}\n")
+        colormsg(f"Message posted to thread: {message}")
 
     return submission

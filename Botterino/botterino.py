@@ -1,7 +1,8 @@
 from .config import pg, username, hints
 from .posterino import submitRound
 from .hosterino import checkAnswers, checkHints
-from .Utils.utils import waitForApproval, approved, postDelay, randomColor
+from .Utils.utils import waitForApproval, approved, postDelay
+from .Utils.color import colormsg
 from .Loader.loader import getRound
 from sty import fg
 from importlib.metadata import version
@@ -13,8 +14,8 @@ v = version("botterino")
 checker = UpdateChecker()
 result = checker.check("botterino", v)
 if result:
-    print(f"{fg.yellow}{result}")
-    print(f'{fg.yellow}run "pip install --upgrade botterino" to update')
+    colormsg(result, fg.yellow)
+    colormsg('run "pip install --upgrade botterino" to update', fg.yellow)
 
 
 def checkType(r):
@@ -36,31 +37,23 @@ def checkType(r):
 
 def main(stop=None):
     while True:
-        print(
-            f"{fg.yellow}Waiting for {username} to win a round... 🐌", end=f"{fg.rs}\n"
-        )
+        colormsg(f"Waiting for {username} to win a round... 🐌", fg.yellow)
         stopped = waitForApproval(stop)
         if stopped or stop:
-            print(f"{fg.red}Stopped botterino{fg.rs}")
+            colormsg("Stopped botterino", fg.red)
             return
-        print(
-            f"{fg.blue}Congrats on a well deserved win {username}! ⭐", end=f"{fg.rs}\n"
-        )
+        colormsg(f"Congrats on a well deserved win {username}! ⭐", fg.blue)
         r = getRound()
         while not r:
-            print(f"{fg.red}No rounds in round file! checking again in 10s")
+            colormsg(f"No rounds in round file! checking again in 10s", fg.red)
             time.sleep(10)
             r = getRound()
         submission = submitRound(r)
-        print(
-            f"{randomColor()}Your round was posted to https://reddit.com{submission.permalink}",
-            end=f"{fg.rs}\n",
+        colormsg(
+            f"Your round was posted to https://reddit.com{submission.permalink}",
         )
-        print(
-            f'{fg.magenta}Round \'{r["title"]}\' posted in {postDelay()}s',
-            end=f"{fg.rs}\n",
-        )
-        print(f"{fg.cyan}Checking Answers: {checkType(r)}...{fg.rs}", end=f"{fg.rs}\n")
+        colormsg(f'Round \'{r["title"]}\' posted in {postDelay()}s', fg.magenta)
+        colormsg(f"Checking Answers: {checkType(r)}...", fg.cyan)
         H = hints if not r.get("hints") else r.get("hints")
         CheckAnswers = Thread(target=checkAnswers, args=(r, submission))
         CheckHints = Thread(target=checkHints, args=(H, submission))
@@ -73,7 +66,4 @@ def main(stop=None):
         after = r.get("after")
         if after:
             submission.reply(after)
-            print(
-                f"{randomColor()}Posted your message after the round: {after}",
-                end=f"{fg.rs}\n",
-            )
+            colormsg(f"Posted your message after the round: {after}")

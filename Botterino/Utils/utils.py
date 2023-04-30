@@ -3,8 +3,6 @@ from ..RedditPoller.RedditPoller import RedditPoller, CommentWrapper
 from ..RedditPoller.Retry import retry
 from geopy.point import Point
 from geopy.distance import distance
-from sty import fg
-from random import randrange
 from halo import Halo
 import re
 import requests
@@ -27,8 +25,6 @@ everything_else = re.compile(
 
 MAPS_URL = "https://maps.google.com/maps?t=k&q=loc:{},{}"
 
-badColors = [0, 16, 17, 18, 22, 52, 88, 90] + list(range(232, 256))
-
 
 def submissions():
     """
@@ -39,22 +35,6 @@ def submissions():
         if submission.subreddit != pg:
             continue
         yield submission.title
-
-
-def randomColorWithAuthor(author):
-    seed = hash(author)
-    random.seed(seed)
-    color = randrange(256)
-    while color in badColors:
-        color = (color + 1) % 256
-    return fg(color)
-
-
-def randomColor():
-    color = randrange(256)
-    while color in badColors:
-        color = randrange(256)
-    return fg(color)
 
 
 def postDelay():

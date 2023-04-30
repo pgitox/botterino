@@ -5,9 +5,11 @@ from .Loader.loader import append, load
 from .botterino import main
 from sty import fg
 from threading import Thread
+from .Utils.color import colormsg
 
 root = Tk()
 root.title("Botterino")
+
 
 # Todo: place this in a sensible place
 class Stopper:
@@ -85,7 +87,7 @@ def append_entry():
     data[name_input] = inner
     append(data, roundfile)
     clear_entries()
-    print(f"{fg.green}Added round {name_input} to rounds.yaml{fg.rs}")
+    colormsg(f"Added round {name_input} to rounds.yaml", fg.green)
 
 
 def clear_entries():

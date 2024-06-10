@@ -26,26 +26,39 @@ def withinTolerance(guess, answer, tolerance):
     return distance(guess, answer).m <= tolerance
 
 
+def checkCoordinateMatch(points, answers, tolerances, used_points=None, depth=0):
+    if used_points is None:
+        used_points = [False] * len(points)
+
+    if depth == len(points):
+        return True
+
+    for i in range(len(points)):
+        if not used_points[i] and withinTolerance(points[i], answers[depth], tolerances[depth]):
+            used_points[i] = True
+            if checkCoordinateMatch(points, answers, tolerances, used_points, depth + 1):
+                return True
+            used_points[i] = False
+
+    return False
+
+
 def checkMultipleCoordinates(guess, answers, tolerances):
     guesser = guess.author.name
     answers = [Point(a) for a in answers]
     match = re.findall(decimal, guess.body)
+
     if len(match) != len(answers):
-        # TODO print a message here
         colormsg(f"{guesser}'s guess {guess.body} was incorrect", author=guesser)
         return False
-    points = [Point(f"{lat},{lon}") for lat, lon in match]
-    points = permutations(points)
 
-    results = [
-        [withinTolerance(p, a, t) for p, a, t in zip(ps, answers, tolerances)]
-        for ps in points
-    ]
-    results = [all(r) for r in results]
-    result = any(results)
-    if not result:
+    points = [Point(f"{lat},{lon}") for lat, lon in match]
+
+    if checkCoordinateMatch(points, answers, tolerances):
+        return True
+    else:
         colormsg(f"{guesser}'s guess {guess.body} was incorrect", author=guesser)
-    return result
+        return False
 
 
 def checkCoordinates(guess, answer, tolerance, map):

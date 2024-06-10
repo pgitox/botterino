@@ -65,7 +65,7 @@ This is useful for cases where
 2. Run with `python -m botterino.failure`
 
 ### Hints:
-Botterino can schedule hints and post them autmoatically.
+Botterino can schedule hints and post them automatically.
 The file `botterino-config/hints.yaml` will be scanned for entries with the same key
 as the corresponding entry in `botterino-config/rounds.yaml`. See `sample-hints.yaml` for syntax.
 

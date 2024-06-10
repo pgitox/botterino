@@ -145,6 +145,42 @@ def checkHints(key, submission, round_active_event, poll_interval=30):
         time.sleep(poll_interval)
 
 
+def checkAnswer(
+    comment,
+    tolerance,
+    text,
+    answer,
+    tolerances,
+    answers,
+    similarity,
+    ignorecase,
+    answerPlot,
+):
+    result = True
+    if tolerance is not None:
+        tolerance = float(tolerance)
+        r = checkCoordinates(comment, answer, tolerance, answerPlot)
+        if r == "ignore":
+            return False
+        result = result and r
+    elif tolerances:
+        tolerances = [float(t) for t in r["tolerances"]]
+        if len(answers) != len(tolerances):
+            colormsg(f"Refusing to check answers, number of tolerances must equal number of answers.", fg.red)
+        result = result and checkMultipleCoordinates(comment, answers, tolerances)
+
+    if text and similarity is None:
+        return False
+
+    if ignorecase is None:
+        ignorecase = True
+
+    if text:
+        result = result and checkText(comment, text, similarity, ignorecase)
+
+    return result
+
+
 def checkAnswers(r, submission):
     (
         tolerance,
@@ -178,30 +214,17 @@ def checkAnswers(r, submission):
         return
 
     for c in getComments(submission):
-        result = True
-        if tolerance is not None:
-            tolerance = float(tolerance)
-            r = checkCoordinates(c, answer, tolerance, answerPlot)
-            if r == "ignore":
-                continue
-            result = result and r
-        elif tolerances:
-            tolerances = [float(t) for t in r["tolerances"]]
-            if len(answers) != len(tolerances):
-                colormsg(
-                    f"Refusing to check answers, number of tolerances must equal number of answers.",
-                    fg.red
-                )
-            result = result and checkMultipleCoordinates(c, answers, tolerances)
-
-        if text and similarity is None:
-            continue
-
-        if ignorecase is None:
-            ignorecase = True
-
-        if text:
-            result = result and checkText(c, text, similarity, ignorecase)
+        result = checkAnswer(
+            c,
+            tolerance,
+            text,
+            answer,
+            tolerances,
+            answers,
+            similarity,
+            ignorecase,
+            answerPlot,
+        )
 
         if not result:
             c.reply(incorrectMessage)

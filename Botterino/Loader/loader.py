@@ -1,5 +1,5 @@
 from pathlib import Path
-from ..config import roundfile, archivefile
+from ..config import roundfile, archivefile, hintfile
 import ruamel.yaml
 
 yaml = ruamel.yaml.YAML()
@@ -40,4 +40,9 @@ def getRound():
     y = load(archivefile) or {}
     y[k] = top
     dump(y, archivefile)
-    return top
+    return k, top
+
+def loadHints(key):
+    with open(hintfile, "r", encoding="utf-8") as f:
+        hints_data = yaml.load(f)
+    return hints_data.get(key, {}).get("hints", [])

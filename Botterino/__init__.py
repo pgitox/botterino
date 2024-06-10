@@ -13,7 +13,7 @@ class files:
         self.rounds = os.path.join(self.roundsdir, "rounds.yaml")
         self.archive = os.path.join(self.roundsdir, "archive.yaml")
         self.prawconfig = os.path.join(self.botconfig, "praw.ini")
-        self.hintfile = os.path.join(self.botconfig, "hints.txt")
+        self.hintfile = os.path.join(self.botconfig, "hints.yaml")
 
 
 botfiles = files()

@@ -5,11 +5,11 @@ from .Loader import loader
 from sty import fg
 import time
 
-r = loader.getRound()
+k, r = loader.getRound()
 while not r:
     colormsg(f"No rounds in round file! checking again in 10s", fg.red)
     time.sleep(10)
-    r = loader.getRound()
+    k, r = loader.getRound()
 
 submission = next(iter(pg.new()))
 colormsg(

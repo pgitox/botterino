@@ -37,6 +37,7 @@ if sys.platform == "win32":
 debug = False
 roundfile = botfiles.rounds
 archivefile = botfiles.archive
+hintfile = botfiles.hintfile
 cwd = os.getcwd()
 # FIXME: clean this up
 try:

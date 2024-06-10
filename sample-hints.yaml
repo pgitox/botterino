@@ -1,0 +1,17 @@
+# hints use yaml syntax
+# indentation must be two spaces
+# use http://www.yamllint.com/ to check your round file syntax! if something is wrong the program will crash!
+
+# hint the round with the key vegas_round from sample-rounds.yaml
+vegas_round:
+  hints:
+    - time: 20
+      text: "This is the first hint for the vegas round."
+    - time: 60
+      text: "This is the first hourly hint for the vegas round."
+    - time: 120
+      text: "This is the second hourly hint for the vegas round."
+    - time: 180
+      text: "This is the third hourly hint for the vegas round."
+    - time: 240
+      text: "This is the fourth hourly hint for the vegas round."

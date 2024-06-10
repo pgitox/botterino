@@ -7,7 +7,7 @@ from .Loader.loader import getRound
 from sty import fg
 from importlib.metadata import version
 from update_checker import UpdateChecker
-from threading import Thread
+from threading import Thread, Event
 import time
 
 v = version("botterino")
@@ -43,24 +43,32 @@ def main(stop=None):
             colormsg("Stopped botterino", fg.red)
             return
         colormsg(f"Congrats on a well deserved win {username}! ⭐", fg.blue)
-        r = getRound()
+        k, r = getRound()
         while not r:
             colormsg(f"No rounds in round file! checking again in 10s", fg.red)
             time.sleep(10)
-            r = getRound()
+            k, r = getRound()
         submission = submitRound(r)
         colormsg(
             f"Your round was posted to https://reddit.com{submission.permalink}",
         )
         colormsg(f'Round \'{r["title"]}\' posted in {postDelay()}s', fg.magenta)
         colormsg(f"Checking Answers: {checkType(r)}...", fg.cyan)
-        H = hints if not r.get("hints") else r.get("hints")
+
+        # Create an event to signal the round status
+        round_active_event = Event()
+        round_active_event.set()
+
         CheckAnswers = Thread(target=checkAnswers, args=(r, submission))
-        CheckHints = Thread(target=checkHints, args=(H, submission))
+        CheckHints = Thread(target=checkHints, args=(k, submission, round_active_event))
         CheckAnswers.start()
         CheckHints.start()
+
+        # Wait for threads to finish
         CheckAnswers.join()
+        round_active_event.clear()  # Clear the event to signal that the round is over
         CheckHints.join()
+
         while approved():
             continue
         after = r.get("after")

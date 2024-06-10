@@ -5,7 +5,6 @@ from .config import (
     incorrectMessage,
     botfiles,
 )
-from itertools import permutations
 import re
 from sty import fg
 from .Utils.color import colormsg, getColorFromAuthor
@@ -20,6 +19,8 @@ from .Utils.utils import (
 from difflib import SequenceMatcher
 from .Map.map import Map
 import time
+from threading import Event
+from .Loader.loader import loadHints
 
 
 def withinTolerance(guess, answer, tolerance):
@@ -121,30 +122,27 @@ def checkText(guess, answer, tolerance, ignorecase):
     return similarity >= tolerance
 
 
-def postHint(submission, time):
-    with open(botfiles.hintfile, "r") as F:
-        hintText = F.read()
+def postHint(submission, time, hintText):
     if not hintText:
-        colormsg(f"Skipping {time}m hint: hints.txt is empty", fg.yellow)
+        colormsg(f"Skipping {time}m hint: no text provided", fg.yellow)
         return
     hint = submission.reply(f"Hint({time}m): {hintText}")
     colormsg(f"Posted hint ({time}m) to https://reddit.com{hint.permalink}", fg.green)
-    open(botfiles.hintfile, "w").close()
 
 
-def checkHints(hints, submission):
-    hints = list(hints)
-    hints += [60, 120, 180, 240]
-    hints = sorted(list(set(hints)))
-    while hints and approved():
-        top = hints[0]
-        duration = int(time.time() - submission.created_utc)
-        duration = duration // 60
-        if duration >= top:
-            postHint(submission, duration)
-            hints.pop(0)
-        time.sleep(10)
-        pass
+def checkHints(key, submission, round_active_event, poll_interval=30):
+    posted_hints = set()
+
+    while round_active_event.is_set():
+        hints = loadHints(key)
+
+        for hint in hints:
+            duration = int(time.time() - submission.created_utc) // 60
+            if hint['time'] <= duration and hint['time'] not in posted_hints:
+                postHint(submission, duration, hint['text'])
+                posted_hints.add(hint['time'])
+
+        time.sleep(poll_interval)
 
 
 def checkAnswers(r, submission):

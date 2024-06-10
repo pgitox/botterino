@@ -66,17 +66,8 @@ This is useful for cases where
 
 ### Hints:
 Botterino can schedule hints and post them autmoatically.
-If the file `botterino-config/hints.txt` contains content,
-its content will be posted to the currently hosted round as a hint
-at the time specified by the user, and then the file is cleared.
-Default hint times can be specified
-in `botterino-config/config.ini`.
-The default value is `hints=[25,45]`.
-The default hint list can be overridden per round by adding the field
-`hints: [10, 20,30]` as a new field in rounds.yaml.
-Hint times are in minutes and are integers.
-Hints at hour boundaries do not need to be specified. If the
-hint file contains text it will be posted automatically at 60,120,180 etc...
+The file `botterino-config/hints.yaml` will be scanned for entries with the same key
+as the corresponding entry in `botterino-config/rounds.yaml`. See `sample-hints.yaml` for syntax.
 
 ---
 

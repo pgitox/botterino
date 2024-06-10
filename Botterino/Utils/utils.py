@@ -121,3 +121,9 @@ def getComments(submission):
             if c.author.name.lower() in donotreply or c.submission != submission:
                 continue
             yield c
+
+def hasHostReplied(comment):
+    for reply in comment.replies:
+        if reply.author and reply.author.name.lower() == username.lower():
+            return True
+    return False

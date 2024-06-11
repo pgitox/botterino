@@ -6,6 +6,7 @@ from .Loader import loader
 from sty import fg
 import time
 from threading import Thread, Event
+from datetime import datetime
 
 
 def processUnrepliedComments(submission, r):
@@ -28,7 +29,8 @@ def processUnrepliedComments(submission, r):
         r.get("similarity"),
         r.get("ignorecase"),
     )
-    comments = getComments(submission)
+    comments = list(getComments(submission))
+    comments.sort(key=lambda c: datetime.fromtimestamp(c.created_utc))
     for c in comments:
         if not hasHostReplied(c):
             if checkAnswer(

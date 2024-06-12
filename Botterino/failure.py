@@ -32,7 +32,12 @@ def processUnrepliedComments(submission, r):
     comments = getCurrentComments(submission)
     comments.sort(key=lambda c: datetime.fromtimestamp(c.created_utc))
     for c in comments:
-        if not hasHostReplied(c) and c.author.name.lower() not in ["r-picturegame", username.lower()]:
+        if (
+            not hasHostReplied(c)
+            and c.author
+            and c.author.name.lower() not in ["r-picturegame", username.lower()]
+            and c.is_root
+        ):
             if checkAnswer(
                 c,
                 tolerance,

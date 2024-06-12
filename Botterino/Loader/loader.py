@@ -45,4 +45,4 @@ def getRound():
 def loadHints(key):
     with open(hintfile, "r", encoding="utf-8") as f:
         hints_data = yaml.load(f)
-    return hints_data.get(key, {}).get("hints", [])
+    return (hints_data or {}).get(key, {}).get("hints", [])

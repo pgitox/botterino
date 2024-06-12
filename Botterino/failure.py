@@ -1,7 +1,7 @@
 from .hosterino import checkAnswers, checkHints, checkAnswer
-from .config import pg, correctMessage, incorrectMessage
+from .config import pg, correctMessage, incorrectMessage, username
 from .Utils.color import colormsg
-from .Utils.utils import approved, getComments, hasHostReplied
+from .Utils.utils import approved, getCurrentComments, hasHostReplied
 from .Loader import loader
 from sty import fg
 import time
@@ -29,14 +29,13 @@ def processUnrepliedComments(submission, r):
         r.get("similarity"),
         r.get("ignorecase"),
     )
-    comments = list(getComments(submission))
+    comments = getCurrentComments(submission)
     comments.sort(key=lambda c: datetime.fromtimestamp(c.created_utc))
     for c in comments:
-        if not hasHostReplied(c):
+        if not hasHostReplied(c) and c.author.name.lower() not in ["r-picturegame", username.lower()]:
             if checkAnswer(
                 c,
                 tolerance,
-                manual,
                 text,
                 answer,
                 tolerances,
@@ -63,11 +62,12 @@ def processUnrepliedComments(submission, r):
                 c.reply(incorrectMessage)
 
 
-k, r = loader.getRound()
-while not r:
+round = loader.getRound()
+while not round:
     colormsg(f"No rounds in round file! checking again in 10s", fg.red)
     time.sleep(10)
-    k, r = loader.getRound()
+    round = loader.getRound()
+k, r = round
 
 submission = next(iter(pg.new()))
 colormsg(

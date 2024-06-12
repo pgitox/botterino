@@ -9,12 +9,12 @@ import re
 from sty import fg
 from .Utils.color import colormsg, getColorFromAuthor
 from .Utils.utils import (
-    approved,
     decimal,
     getComments,
     getDistance,
     MAPS_URL,
     hyperlink,
+    readExistingHints,
 )
 from difflib import SequenceMatcher
 from .Map.map import Map
@@ -131,17 +131,21 @@ def postHint(submission, time, hintText):
 
 
 def checkHints(key, submission, round_active_event, poll_interval=30):
-    posted_hints = set()
-
+    initial = True
     while round_active_event.is_set():
         hints = loadHints(key)
+        existing_hints = readExistingHints(submission)
 
         for hint in hints:
             duration = int(time.time() - submission.created_utc) // 60
-            if hint['time'] <= duration and hint['time'] not in posted_hints:
-                postHint(submission, duration, hint['text'])
-                posted_hints.add(hint['time'])
+            if hint["time"] <= duration:
+                if any(hint["text"] in existing_hint for existing_hint in existing_hints):
+                    if initial:
+                        colormsg(f"Looks like the hint for time {hint['time']}m is already posted")
+                else:
+                    postHint(submission, duration, hint["text"])
 
+        initial = False
         time.sleep(poll_interval)
 
 

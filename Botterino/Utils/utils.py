@@ -121,3 +121,24 @@ def getComments(submission):
             if c.author.name.lower() in donotreply or c.submission != submission:
                 continue
             yield c
+
+
+def getCurrentComments(submission):
+    submission.comments.replace_more(limit=None)
+    return submission.comments.list()
+
+
+def readExistingHints(submission):
+    existing_hints = []
+    comments = getCurrentComments(submission)
+    for c in comments:
+        if c.author.name.lower() == username.lower() and "Hint" in c.body:
+            existing_hints.append(c.body)
+    return existing_hints
+
+
+def hasHostReplied(comment):
+    for reply in comment.replies:
+        if reply.author and reply.author.name.lower() == username.lower():
+            return True
+    return False

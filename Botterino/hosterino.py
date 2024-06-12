@@ -9,12 +9,12 @@ import re
 from sty import fg
 from .Utils.color import colormsg, getColorFromAuthor
 from .Utils.utils import (
-    approved,
     decimal,
     getComments,
     getDistance,
     MAPS_URL,
     hyperlink,
+    readExistingHints,
 )
 from difflib import SequenceMatcher
 from .Map.map import Map
@@ -131,18 +131,58 @@ def postHint(submission, time, hintText):
 
 
 def checkHints(key, submission, round_active_event, poll_interval=30):
-    posted_hints = set()
-
+    initial = True
     while round_active_event.is_set():
         hints = loadHints(key)
+        existing_hints = readExistingHints(submission)
 
         for hint in hints:
             duration = int(time.time() - submission.created_utc) // 60
-            if hint['time'] <= duration and hint['time'] not in posted_hints:
-                postHint(submission, duration, hint['text'])
-                posted_hints.add(hint['time'])
+            if hint["time"] <= duration:
+                if any(hint["text"] in existing_hint for existing_hint in existing_hints):
+                    if initial:
+                        colormsg(f"Looks like the hint for time {hint['time']}m is already posted")
+                else:
+                    postHint(submission, duration, hint["text"])
 
+        initial = False
         time.sleep(poll_interval)
+
+
+def checkAnswer(
+    comment,
+    tolerance,
+    text,
+    answer,
+    tolerances,
+    answers,
+    similarity,
+    ignorecase,
+    answerPlot,
+):
+    result = True
+    if tolerance is not None:
+        tolerance = float(tolerance)
+        r = checkCoordinates(comment, answer, tolerance, answerPlot)
+        if r == "ignore":
+            return False
+        result = result and r
+    elif tolerances:
+        tolerances = [float(t) for t in r["tolerances"]]
+        if len(answers) != len(tolerances):
+            colormsg(f"Refusing to check answers, number of tolerances must equal number of answers.", fg.red)
+        result = result and checkMultipleCoordinates(comment, answers, tolerances)
+
+    if text and similarity is None:
+        return False
+
+    if ignorecase is None:
+        ignorecase = True
+
+    if text:
+        result = result and checkText(comment, text, similarity, ignorecase)
+
+    return result
 
 
 def checkAnswers(r, submission):
@@ -178,30 +218,17 @@ def checkAnswers(r, submission):
         return
 
     for c in getComments(submission):
-        result = True
-        if tolerance is not None:
-            tolerance = float(tolerance)
-            r = checkCoordinates(c, answer, tolerance, answerPlot)
-            if r == "ignore":
-                continue
-            result = result and r
-        elif tolerances:
-            tolerances = [float(t) for t in r["tolerances"]]
-            if len(answers) != len(tolerances):
-                colormsg(
-                    f"Refusing to check answers, number of tolerances must equal number of answers.",
-                    fg.red
-                )
-            result = result and checkMultipleCoordinates(c, answers, tolerances)
-
-        if text and similarity is None:
-            continue
-
-        if ignorecase is None:
-            ignorecase = True
-
-        if text:
-            result = result and checkText(c, text, similarity, ignorecase)
+        result = checkAnswer(
+            c,
+            tolerance,
+            text,
+            answer,
+            tolerances,
+            answers,
+            similarity,
+            ignorecase,
+            answerPlot,
+        )
 
         if not result:
             c.reply(incorrectMessage)

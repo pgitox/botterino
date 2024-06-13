@@ -124,15 +124,16 @@ def getComments(submission):
 
 
 def getCurrentComments(submission):
-    submission.comments.replace_more(limit=None)
-    return submission.comments.list()
+    refreshed = reddit.submission(submission)
+    refreshed.comments.replace_more(limit=None)
+    return refreshed.comments.list()
 
 
 def readExistingHints(submission):
     existing_hints = []
     comments = getCurrentComments(submission)
     for c in comments:
-        if c.author.name.lower() == username.lower() and "Hint" in c.body:
+        if c.author and c.author.name.lower() == username.lower() and "Hint" in c.body:
             existing_hints.append(c.body)
     return existing_hints
 

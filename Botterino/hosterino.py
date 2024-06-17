@@ -131,19 +131,23 @@ def postHint(submission, time, hintText):
 
 
 def checkHints(key, submission, round_active_event, poll_interval=30):
-    initial = True
+    posted_hints = set()
     while round_active_event.is_set():
         hints = loadHints(key)
-        existing_hints = readExistingHints(submission)
+        existing_hints = None
 
         for hint in hints:
             duration = int(time.time() - submission.created_utc) // 60
-            if hint["time"] <= duration:
+            if hint["time"] <= duration and (hint["time"], hint["text"]) not in posted_hints:
+                if not existing_hints:
+                    existing_hints = readExistingHints(submission)
+
                 if any(hint["text"] in existing_hint for existing_hint in existing_hints):
-                    if initial:
-                        colormsg(f"Looks like the hint for time {hint['time']}m is already posted")
+                    colormsg(f"Looks like the hint for time {hint['time']}m is already posted")
+                    posted_hints.add((hint["time"], hint["text"]))
                 else:
                     postHint(submission, duration, hint["text"])
+                    posted_hints.add((hint["time"], hint["text"]))
 
         initial = False
         time.sleep(poll_interval)

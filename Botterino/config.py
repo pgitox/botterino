@@ -92,6 +92,7 @@ finally:
     os.chdir(cwd)
 
 pg = reddit.subreddit("itoxtestingfacility" if debug else "picturegame")
+mods = [moderator.name.lower() for moderator in pg.moderator()]
 
 username = str(reddit.user.me())
 

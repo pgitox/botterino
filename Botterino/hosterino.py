@@ -218,37 +218,37 @@ def checkAnswers(r, submission):
         except Exception:
             pass
 
-    if tolerance is None and tolerances is None and text is None:
-        return
-
     for c in getComments(submission):
-        result = checkAnswer(
-            c,
-            tolerance,
-            text,
-            answer,
-            tolerances,
-            answers,
-            similarity,
-            ignorecase,
-            answerPlot,
-        )
+        if tolerance or tolerances or text:
+            result = checkAnswer(
+                c,
+                tolerance,
+                text,
+                answer,
+                tolerances,
+                answers,
+                similarity,
+                ignorecase,
+                answerPlot,
+            )
 
-        if not result:
-            c.reply(incorrectMessage)
-        if result:
-            if manual:
-                colormsg(
-                    f"Guess '{c.body}' looks correct, but you will have to check it out.",
-                )
-            else:
-                plusCorrect = c.reply(correctMessage)
-                guesser = c.author.name
-                colormsg(
-                    f"Corrected {guesser} in {plusCorrect.created_utc - c.created_utc}s",
-                    fg.green,
-                )
-                break
+            if not result:
+                c.reply(incorrectMessage)
+            if result:
+                if manual:
+                    colormsg(
+                        f"Guess '{c.body}' looks correct, but you will have to check it out.",
+                    )
+                else:
+                    plusCorrect = c.reply(correctMessage)
+                    guesser = c.author.name
+                    colormsg(
+                        f"Corrected {guesser} in {plusCorrect.created_utc - c.created_utc}s",
+                        fg.green,
+                    )
+                    break
+        else:
+            pass
 
     # TODO: show the map on every guess instead of only when the round is over
     if answerPlot:

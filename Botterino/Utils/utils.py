@@ -1,4 +1,4 @@
-from ..config import pg, username, debug, reddit, donotreply, api
+from ..config import pg, username, debug, reddit, donotreply, api, mods
 from ..RedditPoller.RedditPoller import RedditPoller, CommentWrapper
 from ..RedditPoller.Retry import retry
 from geopy.point import Point
@@ -111,7 +111,7 @@ def getComments(submission):
             and c.submission
         ):
             if (
-                c.author.name.lower() == username.lower()
+                c.author.name.lower() in [username.lower(), *mods]
                 and "+correct" in c.body
                 and not c.is_root
             ):

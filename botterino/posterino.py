@@ -1,8 +1,6 @@
-import math
 from .config import pg
 from .Utils.utils import getRoundPrefix, submissions
 from .Utils.color import colormsg
-from sty import fg
 import time
 import re
 
@@ -11,8 +9,8 @@ def getSeriesPrefix(name):
     if not name:
         return ""
     name = name.strip()
-    indefinite = re.compile(f"\s*{name}\s*#?\s*(\d+)\s*")
-    definite = re.compile(f"\s*{name}\s*#?\s*(\d+)\s*\/\s*(\d+)\s*")
+    indefinite = re.compile(rf"\s*{name}\s*#?\s*(\d+)\s*")
+    definite = re.compile(rf"\s*{name}\s*#?\s*(\d+)\s*\/\s*(\d+)\s*")
     for title in submissions():
         defmatch = re.search(definite, title)
         if defmatch:

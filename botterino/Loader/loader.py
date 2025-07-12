@@ -42,6 +42,7 @@ def getRound():
     dump(y, archivefile)
     return k, top
 
+
 def loadHints(key):
     with open(hintfile, "r", encoding="utf-8") as f:
         hints_data = yaml.load(f)

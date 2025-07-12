@@ -35,9 +35,13 @@ def checkCoordinateMatch(points, answers, tolerances, used_points=None, depth=0)
         return True
 
     for i in range(len(points)):
-        if not used_points[i] and withinTolerance(points[i], answers[depth], tolerances[depth]):
+        if not used_points[i] and withinTolerance(
+            points[i], answers[depth], tolerances[depth]
+        ):
             used_points[i] = True
-            if checkCoordinateMatch(points, answers, tolerances, used_points, depth + 1):
+            if checkCoordinateMatch(
+                points, answers, tolerances, used_points, depth + 1
+            ):
                 return True
             used_points[i] = False
 
@@ -138,12 +142,19 @@ def checkHints(key, submission, round_active_event, poll_interval=30):
 
         for hint in hints:
             duration = int(time.time() - submission.created_utc) // 60
-            if hint["time"] <= duration and (hint["time"], hint["text"]) not in posted_hints:
+            if (
+                hint["time"] <= duration
+                and (hint["time"], hint["text"]) not in posted_hints
+            ):
                 if not existing_hints:
                     existing_hints = readExistingHints(submission)
 
-                if any(hint["text"] in existing_hint for existing_hint in existing_hints):
-                    colormsg(f"Looks like the hint for time {hint['time']}m is already posted")
+                if any(
+                    hint["text"] in existing_hint for existing_hint in existing_hints
+                ):
+                    colormsg(
+                        f"Looks like the hint for time {hint['time']}m is already posted"
+                    )
                     posted_hints.add((hint["time"], hint["text"]))
                 else:
                     postHint(submission, duration, hint["text"])
@@ -174,7 +185,10 @@ def checkAnswer(
     elif tolerances:
         tolerances = [float(t) for t in r["tolerances"]]
         if len(answers) != len(tolerances):
-            colormsg(f"Refusing to check answers, number of tolerances must equal number of answers.", fg.red)
+            colormsg(
+                f"Refusing to check answers, number of tolerances must equal number of answers.",
+                fg.red,
+            )
         result = result and checkMultipleCoordinates(comment, answers, tolerances)
 
     if text and similarity is None:

@@ -33,7 +33,7 @@ def formatDistance(meters):
 
 
 def commentLink(comment):
-    return f"https://reddit.com{comment.permalink}"
+    return f"https://reddit.com/comments/{comment.submission.id}/_/{comment.id}/"
 
 
 def checkCoordinateMatch(points, answers, tolerances, used_points=None, depth=0):

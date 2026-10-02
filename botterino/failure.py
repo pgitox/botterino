@@ -9,7 +9,7 @@ from sty import fg
 
 from .botterino import hostRound, nextValidRound
 from .config import username
-from .hosterino import checkAnswer, reportResult, roundFields
+from .hosterino import checkAnswer, commentLink, reportResult, roundFields
 from .Utils.color import colormsg
 from .Utils.utils import (
     getCurrentComments,
@@ -63,7 +63,7 @@ def processUnrepliedComments(submission, r):
             if reportResult(c, result, manual):
                 return True, seen
         except Exception:  # pylint: disable=broad-except
-            colormsg(f"Error checking https://reddit.com{c.permalink}:", fg.red)
+            colormsg(f"Error checking {commentLink(c)}:", fg.red)
             colormsg(traceback.format_exc(), fg.red)
     return False, seen
 

@@ -152,6 +152,11 @@ class App:
         append({name: r}, roundfile)
         self.clear()
         colormsg(f"Added round {name} to rounds.yaml", fg.green)
+        if not self.runner.running() or self.runner.stopper:
+            colormsg(
+                "Botterino is not running, press Start to post this round when you win",
+                fg.yellow,
+            )
 
     def clear(self):
         for var in self.vars.values():
@@ -163,6 +168,7 @@ class App:
 def main():
     root = tk.Tk()
     App(root)
+    colormsg("Press Start in the botterino window to wait for your win", fg.yellow)
     root.mainloop()
 
 

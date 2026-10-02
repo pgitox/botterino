@@ -156,7 +156,7 @@ def hostRound(k, r, submission, stop=None, skip=()):
 
 
 def main(stop=None):
-    checkForUpdates()
+    Thread(target=checkForUpdates, daemon=True).start()
     checkFiles()
     watcher = FileWatcher(roundfile, hintfile)
     while True:

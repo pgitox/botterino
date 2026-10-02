@@ -1,17 +1,17 @@
-from tkinter import *
-from tkinter import ttk
-from .config import roundfile
-from .Loader.loader import append, load
-from .botterino import main
-from sty import fg
+import os
+import tkinter as tk
 from threading import Thread
+from tkinter import filedialog, ttk
+
+from sty import fg
+
+from . import botfiles
+from .botterino import main as runBotterino
+from .Loader.loader import append, load, roundfile
 from .Utils.color import colormsg
-
-root = Tk()
-root.title("Botterino")
+from .validate import roundErrors
 
 
-# Todo: place this in a sensible place
 class Stopper:
     def __init__(self):
         self.stopped = False
@@ -22,148 +22,149 @@ class Stopper:
     def stop(self):
         self.stopped = True
 
-    def unstop(self):
-        self.stopped = False
-
 
 class Runner:
     def __init__(self):
         self.stopper = Stopper()
-        self.T = Thread(target=main, args=(self.stopper,))
+        self.thread = None
+
+    def running(self):
+        return self.thread is not None and self.thread.is_alive()
 
     def start(self):
-        self.stopper.unstop()
-        self.T.start()
+        if self.running():
+            if not self.stopper:
+                colormsg("Botterino is already running", fg.yellow)
+                return
+            colormsg("Botterino is still stopping, try again in a moment", fg.yellow)
+            return
+        self.stopper = Stopper()
+        self.thread = Thread(target=runBotterino, args=(self.stopper,), daemon=True)
+        self.thread.start()
 
     def stop(self):
+        if self.running():
+            colormsg("Stopping botterino...", fg.yellow)
         self.stopper.stop()
-        self.T = Thread(target=main, args=(self.stopper,))
 
 
-R = Runner()
+class App:
+    FIELDS = ["Name", "Title", "Answer", "Tolerance", "URL", "Image", "Message"]
 
+    def __init__(self, root):
+        self.root = root
+        self.runner = Runner()
+        root.title("Botterino")
 
-def append_entry():
-    name_input = str(name.get())
-    if not name_input:
-        error_text.set("Name is missing")
-        return
-    d = load(roundfile)
-    if d and name_input in d:
-        error_text.set("Name is not unique")
-        return
-    title_input = title.get()
-    if not title_input:
-        error_text.set("Title is missing")
-        return
-    answer_input = answer.get()
-    tolerance_input = ""
-    if tolerance.get():
-        try:
-            tolerance_input = int(tolerance.get())
-        except:
-            error_text.set("Tolerance must be a number")
+        frame = ttk.Frame(root, padding="8 8 8 12")
+        frame.grid(column=0, row=0, sticky="nsew")
+        root.columnconfigure(0, weight=1)
+        root.rowconfigure(0, weight=1)
+        frame.columnconfigure(2, weight=1)
+
+        self.vars = {}
+        self.entries = {}
+        for row, field in enumerate(self.FIELDS, start=1):
+            ttk.Label(frame, text=field).grid(column=1, row=row, sticky="w")
+            var = tk.StringVar()
+            entry = ttk.Entry(frame, width=50, textvariable=var)
+            entry.grid(column=2, row=row, sticky="we")
+            self.vars[field], self.entries[field] = var, entry
+        ttk.Button(frame, text="Browse…", command=self.browse).grid(
+            column=3, row=self.FIELDS.index("Image") + 1, sticky="w"
+        )
+
+        row = len(self.FIELDS) + 1
+        ttk.Label(frame, text="Manual").grid(column=1, row=row, sticky="w")
+        self.manual = tk.BooleanVar(value=False)
+        ttk.Checkbutton(frame, variable=self.manual).grid(column=2, row=row, sticky="w")
+
+        self.error = tk.StringVar()
+        ttk.Label(
+            frame, foreground="red", textvariable=self.error, wraplength=420
+        ).grid(column=1, row=row + 1, columnspan=3, sticky="we")
+
+        buttons = ttk.Frame(frame)
+        buttons.grid(column=2, row=row + 2, sticky="we")
+        ttk.Button(buttons, text="Clear", command=self.clear).pack(side="left")
+        ttk.Button(buttons, text="Add round", command=self.appendEntry).pack(
+            side="right"
+        )
+
+        controls = ttk.Frame(frame)
+        controls.grid(column=2, row=row + 3, sticky="we")
+        ttk.Button(controls, text="Start", command=self.runner.start).pack(side="left")
+        ttk.Button(controls, text="Stop", command=self.runner.stop).pack(side="right")
+
+        for child in frame.winfo_children():
+            child.grid_configure(padx=5, pady=2)
+
+    def browse(self):
+        path = filedialog.askopenfilename(
+            initialdir=botfiles.imagesdir,
+            filetypes=[("Images", "*.png *.jpg *.jpeg *.gif"), ("All files", "*")],
+        )
+        if not path:
             return
-    if tolerance_input and not answer_input:
-        error_text.set("Answer missing when tolerance is present")
-        return
-    url_input = url.get()
-    if not url_input:
-        error_text.set("URL is missing")
-        return
-    manual_input = bool(manual.get())
-    data = {}
-    inner = {}
-    if title_input:
-        inner["title"] = title_input
-    if answer_input:
-        inner["answer"] = answer_input
-    if tolerance_input:
-        inner["tolerance"] = tolerance_input
-    if url_input:
-        inner["url"] = url_input
-    if manual_input:
-        inner["manual"] = manual_input
-    data[name_input] = inner
-    append(data, roundfile)
-    clear_entries()
-    colormsg(f"Added round {name_input} to rounds.yaml", fg.green)
+        # keep paths short when the image is in the images folder
+        try:
+            relative = os.path.relpath(path, botfiles.imagesdir)
+            if not relative.startswith(".."):
+                path = relative
+        except ValueError:
+            pass
+        self.vars["Image"].set(path)
+
+    def appendEntry(self):
+        values = {k: v.get().strip() for k, v in self.vars.items()}
+        name = values["Name"]
+        if not name:
+            self.error.set("Name is missing")
+            return
+        existing = load(roundfile)
+        if existing and name in existing:
+            self.error.set("Name is not unique")
+            return
+
+        r = {}
+        for field, key in [
+            ("Title", "title"),
+            ("Answer", "answer"),
+            ("URL", "url"),
+            ("Image", "path"),
+            ("Message", "message"),
+        ]:
+            if values[field]:
+                r[key] = values[field]
+        if values["Tolerance"]:
+            try:
+                r["tolerance"] = float(values["Tolerance"])
+            except ValueError:
+                self.error.set("Tolerance must be a number")
+                return
+        if self.manual.get():
+            r["manual"] = True
+
+        errors = roundErrors(r)
+        if errors:
+            self.error.set("\n".join(errors))
+            return
+        append({name: r}, roundfile)
+        self.clear()
+        colormsg(f"Added round {name} to rounds.yaml", fg.green)
+
+    def clear(self):
+        for var in self.vars.values():
+            var.set("")
+        self.error.set("")
+        self.manual.set(False)
 
 
-def clear_entries():
-    name_entry.delete(0, END)
-    title_entry.delete(0, END)
-    answer_entry.delete(0, END)
-    tolerance_entry.delete(0, END)
-    url_entry.delete(0, END)
-    error_text.set("")
-    manual.set(False)
+def main():
+    root = tk.Tk()
+    App(root)
+    root.mainloop()
 
 
-def start_botterino():
-    # dummy function to start botterino
-    R.start()
-
-
-def stop_botterino():
-    # dummy function to end botterino
-    R.stop()
-
-
-mainframe = ttk.Frame(root, padding="3 6 3 12")
-mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
-root.columnconfigure(0, weight=1)
-root.rowconfigure(0, weight=1)
-
-ttk.Label(mainframe, text="Name").grid(column=1, row=1, sticky=W)
-ttk.Label(mainframe, text="Title").grid(column=1, row=2, sticky=W)
-ttk.Label(mainframe, text="Answer").grid(column=1, row=3, sticky=W)
-ttk.Label(mainframe, text="Tolerance").grid(column=1, row=4, sticky=W)
-ttk.Label(mainframe, text="URL").grid(column=1, row=5, sticky=W)
-ttk.Label(mainframe, text="Manual").grid(column=1, row=6, sticky=W)
-
-error_text = StringVar()
-error_label = ttk.Label(mainframe, foreground="red", textvariable=error_text)
-error_label.grid(column=1, row=7, sticky=(W, E))
-
-name = StringVar()
-name_entry = ttk.Entry(mainframe, width=50, textvariable=name)
-name_entry.grid(column=2, row=1, sticky=(W, E))
-
-title = StringVar()
-title_entry = ttk.Entry(mainframe, width=50, textvariable=title)
-title_entry.grid(column=2, row=2, sticky=(W, E))
-
-answer = StringVar()
-answer_entry = ttk.Entry(mainframe, width=50, textvariable=answer)
-answer_entry.grid(column=2, row=3, sticky=(W, E))
-
-tolerance = StringVar()
-tolerance_entry = ttk.Entry(mainframe, width=50, textvariable=tolerance)
-tolerance_entry.grid(column=2, row=4, sticky=(W, E))
-
-url = StringVar()
-url_entry = ttk.Entry(mainframe, width=50, textvariable=url)
-url_entry.grid(column=2, row=5, sticky=(W, E))
-
-manual = BooleanVar(value=False)
-manual_entry = ttk.Checkbutton(mainframe, variable=manual, onvalue=True, offvalue=False)
-manual_entry.grid(column=2, row=6, sticky=(W, E))
-
-ttk.Button(mainframe, text="Clear", command=clear_entries).grid(
-    column=2, row=7, sticky=W
-)
-ttk.Button(mainframe, text="Submit", command=append_entry).grid(
-    column=2, row=7, sticky=E
-)
-ttk.Button(mainframe, text="Start", command=start_botterino).grid(
-    column=2, row=8, sticky=W
-)
-ttk.Button(mainframe, text="Stop", command=stop_botterino).grid(
-    column=2, row=8, sticky=E
-)
-
-for child in mainframe.winfo_children():
-    child.grid_configure(padx=5, pady=2)
-
-root.mainloop()
+if __name__ == "__main__":
+    main()

@@ -1,93 +1,179 @@
 # Botterino
 
-Botterino allows automation of hosting and posting of /r/picturegame coordinates rounds
+Botterino automates hosting and posting of /r/picturegame coordinate rounds.
 
-When running botterino, if you win a round, your round will automatically be posted.
-It will reply with 'x' or '+correct' to any comments on your round automatically, with configurable tolerances.
+- 🏁 **Win a round, and your next round is posted automatically** as soon as you are approved to host
+- ✅ **Replies `+correct` or `❌` to guesses** with configurable distance tolerances, multiple coordinates or text matching
+- 🖼️ **Post image links or upload images straight from your computer**
+- 💡 **Scheduled hints**, messages when a round starts or ends, and automatic series numbering
+- 🗺️ **A live map of everyone's guesses** saved for every round
+- 🔍 **Checks your round files for mistakes** before you win, not after
 
 ---
 
-## Pre-requisites
+## Install
 
-0. All the files you interact with will live in the botterino-config folder which is located:
-    1. windows: `C:\Users\your username\botterino-config`
-    2. mac: `/Users/<your username/botterino-config`
-    3. linux: `~/botterino-config`
-    These files are created for you the first time you run the bot
-1. You must have [Python](https://www.python.org/downloads/) installed on your computer
-    1. If on windows it is best to install python from the [microsoft store](https://www.microsoft.com/en-us/p/python-39/9p7qfqmjrfp7?activetab=pivot:overviewtab)
-2. Install the bot
-    1. open a terminal or command prompt window and type the following command: `pip install botterino`
-3. You must [create a Reddit app](https://www.reddit.com/prefs/apps/) and add authentication details in
-    `botterino-config/praw.ini`; see `sample-praw.ini` (on github) for an example
-    1. Give app any name you choose, such as 'botterino'
-    2. Choose 'script' as app type
-    3. Fill in 'redirect URI' with `http://localhost:8080` (This is irrelevant unless OAuth2 is used,but it's a required field)
-    4. Once created, you'll have a 'secret', copy/paste that as `client_secret` in botterino-config/praw.ini
-    5. You'll also have a less obvious client id, in the top left under the app name and the words 'personal use script' - copy/paste that into `client_id` in praw.ini
-4. Fill out the rest of 'botterino-config/praw.ini' with your Reddit username/password as well as anything you want for `user_agent`
+1. Install [Python](https://www.python.org/downloads/) 3.8 or newer
+    1. on windows it is easiest to install python from the [microsoft store](https://apps.microsoft.com/search?query=python)
+2. Open a terminal (or command prompt) and run `pip install botterino`
+3. Run `python -m botterino`. The first time, a short setup asks where botterino should keep its files
+   and where your round images are. Press enter to accept the defaults.
+   You can run the setup again any time with `python -m botterino.configure`
+
+All the files you interact with live in the **botterino-config** folder. By default that is:
+
+| OS      | Location                               |
+|---------|----------------------------------------|
+| windows | `C:\Users\<your username>\botterino-config` |
+| mac     | `/Users/<your username>/botterino-config` |
+| linux   | `~/botterino-config`                   |
+
+To keep it somewhere else, choose a different folder in the setup or set the `BOTTERINO_CONFIG` environment variable.
+
+```
+botterino-config/
+├── praw.ini          reddit login
+├── config.ini        settings
+├── hints.yaml        scheduled hints
+├── images/           images for 'path:' rounds (configurable)
+├── maps/             maps of guesses for each round
+└── rounds/
+    ├── rounds.yaml   rounds waiting to be posted
+    └── archive.yaml  rounds that have been posted
+```
+
+### Reddit login
+
+[Create a Reddit app](https://www.reddit.com/prefs/apps/) and add its details to `botterino-config/praw.ini`
+(see [`sample-praw.ini`](sample-praw.ini)):
+
+1. Give the app any name, such as 'botterino'
+2. Choose 'script' as the app type
+3. Fill in 'redirect URI' with `http://localhost:8080`
+4. Once created, copy the 'secret' into `client_secret`
+5. Copy the client id (under the app name and the words 'personal use script') into `client_id`
+6. Fill in your Reddit `username`, `password` and anything you like for `user_agent`
+
+**Accounts with 2fa:** leave out `username` and `password`. When you run botterino, log in through the browser
+window that opens, then paste the `refresh_token` it prints into `praw.ini` so you don't have to log in again.
 
 ---
 
 ## Usage
 
-- add round(s) in botterino-config/rounds/rounds.yaml. See sample-rounds.yaml on botterino github page for information on round syntax and types of features supported.
-- run with `python -m botterino`
+1. Add rounds to `botterino-config/rounds/rounds.yaml`.
+   See [`sample-rounds.yaml`](sample-rounds.yaml) for every kind of round botterino supports.
+2. Run `python -m botterino`
+3. Win! Until you win, botterino just waits. When you are approved to host, the top round in `rounds.yaml` is posted.
 
-## UI:
-- The ui can be launched with `python -m botterino.ui`
-- Through the ui you can automatically populate rounds.yaml and start/stop the bot
+```yaml
+vegas_round:
+  title: 'What are my coordinates?'
+  url: https://i.imgur.com/qBRRrbD.jpg
+  answer: 36.170439, -115.139889
+  tolerance: 50
+```
 
-### Normal hosting
+Rounds added to `rounds.yaml` while botterino is running are picked up automatically, no need to restart.
+Once a round is posted it moves to `rounds/archive.yaml`.
 
-Rounds are kept in the 'rounds/rounds.yaml' file, see 'sample.yaml' for some examples
+### Uploading images
 
-#### Steps
-1. Add round(s) to 'botterino-config/rounds/rounds.yaml'
-2. Open a terminal or command prompt and type `python -m botterino`
-    1. Then all you have to do is win. Until you win, botterino will do nothing
-    2. When you win, the top round in rounds.yaml is posted as soon as you are approved to host
+Use `path` instead of `url` to upload an image from your computer:
 
-Any new rounds added to 'botterino-config/rounds/rounds.yaml' while the app is running will automatically be added to the queue, no need to restart.
-Once a round is complete, it will be moved to 'botterino-config/rounds/archive.yaml'.
+```yaml
+upload_round:
+  title: 'What are my coordinates?'
+  path: vegas.jpg
+  answer: 36.170439, -115.139889
+  tolerance: 50
+```
+
+Relative paths are looked up in your images folder first (`botterino-config/images` unless you picked another
+folder in the setup), then in `botterino-config/rounds`, then in the folder you started botterino from.
+Absolute paths work too; on windows write them in single quotes (`'C:\Users\me\Pictures\vegas.jpg'`) or with forward
+slashes. png, jpg and gif images up to 20MB are supported.
+
+### Checking your rounds
+
+Botterino checks `rounds.yaml` and `hints.yaml` when it starts and every time you save them while it is waiting,
+and warns you about problems like invalid yaml, missing titles, bad coordinates, images that don't exist,
+typos in field names and rounds with duplicate names. If the next round has an error when you win, botterino waits
+for you to fix it instead of posting something broken.
+
+You can also check them yourself at any time:
+
+```
+python -m botterino.validate
+```
+
+### Hints
+
+Botterino can post hints on a schedule. Entries in `botterino-config/hints.yaml` are matched to rounds by name.
+See [`sample-hints.yaml`](sample-hints.yaml) for the syntax. `hints.yaml` can be edited while a round is running.
+
+### Map of guesses
+
+For coordinate rounds, every guess is plotted on a map with the answer and its tolerance, saved to
+`botterino-config/maps`. The map is updated after every guess, so you can refresh it in your browser during the round.
+When the round ends it opens in your browser, set `open_map = false` in `config.ini` to turn that off.
 
 ### Live rounds
 
-Botterino can be used on a round that is already live
+Botterino can take over a round that is already live, for example if you posted manually or botterino crashed while hosting.
 
-This is useful for cases where
-1. You post manually and decide you would like bot to host
-2. Bot posts for you but crashes during hosting for some reason
+1. Make sure the round is at the top of `rounds.yaml`
+2. Run `python -m botterino.failure`
 
-#### Steps
-1. Will use the top round in rounds.yaml
-    1. `url` field should be omitted
-2. Run with `python -m botterino.failure`
+Botterino replies to the guesses it missed, then continues hosting as usual.
 
-### Hints:
-Botterino can schedule hints and post them automatically.
-The file `botterino-config/hints.yaml` will be scanned for entries with the same key
-as the corresponding entry in `botterino-config/rounds.yaml`. See `sample-hints.yaml` for syntax.
+### UI
+
+`python -m botterino.ui` opens a small window to add rounds to `rounds.yaml` (including picking an image to upload)
+and to start and stop the bot.
 
 ---
 
-## Misc
+## Settings
 
-### Customize
-Options such as correct message and incorrect message can be customized in botterino-config/config.ini
+Settings live in `botterino-config/config.ini`. New settings are added automatically with their defaults when you update.
 
-### Update
-Update this botterino with
-`pip install --upgrade botterino`
+| Setting             | Default        | Description |
+|---------------------|----------------|-------------|
+| `correct_message`   | `+correct`     | reply to correct guesses |
+| `incorrect_message` | `❌`           | reply to incorrect guesses |
+| `images_dir`        | *(empty)*      | folder searched first for image `path`s, empty means `botterino-config/images` |
+| `open_map`          | `true`         | open the map of guesses in your browser when a round ends |
+| `save_map`          | `true`         | save a map of guesses for coordinate rounds |
+| `color`             | `auto`         | colored output: `auto`, `always` or `never`. The `NO_COLOR` environment variable also turns it off |
+| `hyperlinks`        | `auto`         | clickable links in the terminal: `auto`, `always` or `never` |
+| `ignore_users`      | *(empty)*      | comma separated usernames botterino never replies to |
+| `subreddit`         | `picturegame`  | only change this for testing |
 
-### Issues
-* Bot does not run, crash message shows 403 error, everything in praw.ini looks correct
-    1. try a different user agent
+---
 
+## Commands
 
-### Colors on windows
-This botterino uses colorful output. If you see strange output like this on windows
-![Strange windows output](https://cdn.discordapp.com/attachments/768582651669381191/830607745769930762/unknown.png)
-then download [Windows terminal](https://www.microsoft.com/en-us/p/windows-terminal/9n0dx20hk701?rtc=1)
-from the Microsoft store.
+| Command                           | What it does |
+|-----------------------------------|--------------|
+| `python -m botterino`             | run the bot |
+| `python -m botterino.validate`    | check `rounds.yaml` and `hints.yaml` for mistakes |
+| `python -m botterino.configure`   | run the setup again (config folder, images folder, map) |
+| `python -m botterino.failure`     | take over a round that is already live |
+| `python -m botterino.ui`          | open the UI |
 
+The same commands are also installed as `botterino`, `botterino-check`, `botterino-setup`, `botterino-failure` and `botterino-ui`.
+
+## Update
+
+```
+pip install --upgrade botterino
+```
+
+## Troubleshooting
+
+* **Bot does not run, crash message shows a 403 error, everything in praw.ini looks correct**: try a different `user_agent`
+* **`praw.ini` errors about a duplicate section**: only one `[botterino]` section may be uncommented
+* **Strange characters instead of colors on windows**: botterino turns on color support in the windows console
+  automatically. If you still see codes like `[38;5;...m`, use [Windows Terminal](https://apps.microsoft.com/detail/9n0dx20hk701)
+  or set `color = never` in `config.ini`

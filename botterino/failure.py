@@ -1,15 +1,29 @@
-from .hosterino import checkAnswers, checkHints, checkAnswer
-from .config import pg, correctMessage, incorrectMessage, username
-from .Utils.color import colormsg
-from .Utils.utils import approved, getCurrentComments, hasHostReplied
-from .Loader import loader
+"""
+Host a round that is already live, e.g. after posting manually or a crash.
+Run with `python -m botterino.failure`
+"""
+
+import traceback
+
 from sty import fg
-import time
-from threading import Thread, Event
-from datetime import datetime
+
+from .botterino import hostRound, nextValidRound
+from .config import username
+from .hosterino import checkAnswer, reportResult, roundFields
+from .Utils.color import colormsg
+from .Utils.utils import (
+    getCurrentComments,
+    hasHostReplied,
+    isCorrection,
+    latestSubmission,
+)
 
 
 def processUnrepliedComments(submission, r):
+    """
+    replies to guesses made while botterino was not running
+    returns (corrected, ids of the comments that were looked at)
+    """
     (
         tolerance,
         manual,
@@ -19,26 +33,23 @@ def processUnrepliedComments(submission, r):
         answers,
         similarity,
         ignorecase,
-    ) = (
-        r.get("tolerance"),
-        r.get("manual"),
-        r.get("text"),
-        r.get("answer"),
-        r.get("tolerances"),
-        r.get("answers"),
-        r.get("similarity"),
-        r.get("ignorecase"),
-    )
-    comments = getCurrentComments(submission)
-    comments.sort(key=lambda c: datetime.fromtimestamp(c.created_utc))
+    ) = roundFields(r)
+    comments = getCurrentComments(submission) or []
+    if any(c.author and isCorrection(c, submission) for c in comments):
+        colormsg("This round has already been corrected", fg.yellow)
+        return True, set()
+    comments.sort(key=lambda c: c.created_utc)
+    seen = {c.id for c in comments}
     for c in comments:
         if (
-            not hasHostReplied(c)
-            and c.author
-            and c.author.name.lower() not in ["r-picturegame", username.lower()]
-            and c.is_root
+            not c.is_root
+            or not c.author
+            or c.author.name.lower() in ["r-picturegame", username.lower()]
+            or hasHostReplied(c)
         ):
-            if checkAnswer(
+            continue
+        try:
+            result = checkAnswer(
                 c,
                 tolerance,
                 text,
@@ -48,57 +59,31 @@ def processUnrepliedComments(submission, r):
                 similarity,
                 ignorecase,
                 None,
-            ):
-                colormsg(f"Correct guess found in comment: {c.permalink}", fg.green)
-                if manual:
-                    colormsg(
-                        f"Guess '{c.body}' looks correct, but you will have to check it out.",
-                    )
-                else:
-                    plusCorrect = c.reply(correctMessage)
-                    guesser = c.author.name
-                    colormsg(
-                        f"Corrected {guesser} in {plusCorrect.created_utc - c.created_utc}s",
-                        fg.green,
-                    )
-                    break
-            else:
-                colormsg(f"Incorrect guess in comment: {c.permalink}", fg.red)
-                c.reply(incorrectMessage)
+            )
+            if reportResult(c, result, manual):
+                return True, seen
+        except Exception:  # pylint: disable=broad-except
+            colormsg(f"Error checking https://reddit.com{c.permalink}:", fg.red)
+            colormsg(traceback.format_exc(), fg.red)
+    return False, seen
 
 
-round = loader.getRound()
-while not round:
-    colormsg(f"No rounds in round file! checking again in 10s", fg.red)
-    time.sleep(10)
-    round = loader.getRound()
-k, r = round
+def main():
+    k, r = nextValidRound()
 
-submission = next(iter(pg.new()))
-colormsg(
-    f"Checking answers on https://reddit.com{submission.permalink}",
-)
+    submission = latestSubmission()
+    if not submission:
+        colormsg(f"Could not find a round posted by {username}", fg.red)
+        return
+    colormsg(
+        f"Checking answers on https://reddit.com{submission.permalink}",
+    )
 
-# Process unreplied comments
-processUnrepliedComments(submission, r)
+    corrected, seen = processUnrepliedComments(submission, r)
+    if corrected:
+        return
+    hostRound(k, r, submission, skip=seen)
 
-# Create an event to signal the round status
-round_active_event = Event()
-round_active_event.set()
 
-CheckAnswers = Thread(target=checkAnswers, args=(r, submission))
-CheckHints = Thread(target=checkHints, args=(k, submission, round_active_event))
-CheckAnswers.start()
-CheckHints.start()
-
-# Wait for threads to finish
-CheckAnswers.join()
-round_active_event.clear()  # Clear the event to signal that the round is over
-CheckHints.join()
-
-while approved():
-    continue
-after = r.get("after")
-if after:
-    submission.reply(after)
-    colormsg(f"Posted your message after the round: {after}")
+if __name__ == "__main__":
+    main()

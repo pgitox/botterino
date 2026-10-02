@@ -1,8 +1,12 @@
-# hints use yaml syntax
-# indentation must be two spaces
-# use http://www.yamllint.com/ to check your round file syntax! if something is wrong the program will crash!
+# Sample hints for botterino. Copy them into botterino-config/hints.yaml
+#
+# - hints use yaml syntax, indent by two spaces
+# - each entry uses the same name as a round in rounds.yaml
+# - 'time' is the number of minutes after the round is posted
+# - hints.yaml can be edited while a round is running, it is checked every 30 seconds
+# - check your hints with `python -m botterino.validate`
 
-# hint the round with the key vegas_round from sample-rounds.yaml
+# hints for the round named vegas_round in sample-rounds.yaml
 vegas_round:
   hints:
     - time: 20

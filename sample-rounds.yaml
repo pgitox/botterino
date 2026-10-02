@@ -1,20 +1,41 @@
+# Sample rounds for botterino. Copy the ones you want into botterino-config/rounds/rounds.yaml
+#
+# - rounds use yaml syntax, indent fields by two spaces underneath the round name
+# - every round needs a unique name (the line ending in ':'), rounds with duplicate names are lost
+# - rounds are posted from the top of rounds.yaml down
+# - check your rounds any time with `python -m botterino.validate`, botterino also checks them
+#   when it starts and whenever you save rounds.yaml, so you find mistakes before you win
 
-# rounds use yaml syntax
-# indentation must be two spaces
-# use http://www.yamllint.com/ to check your round file syntax! if something is wrong the program will crash!
-
-# post a round but do not reply to any comments (host everything yourself)
-vegas_round:
+# ---------------------------------------------------------------------------------------
+# Post a round but do not reply to any comments (host everything yourself)
+# ---------------------------------------------------------------------------------------
+just_post:
   title: 'What are my coordinates?'
-  url: imgur.com/notarealurl
+  url: https://i.imgur.com/qBRRrbD.jpg
 
 # put the title in quotes (either single or double).
-# If the title itself contains quotes , use the opposite style of quotes.
-# If an apostrophe is used in your title, it is counted as a single quote
+# If the title itself contains quotes, use the opposite style of quotes.
+# An apostrophe counts as a single quote, so use double quotes: "What's this?"
 
+# ---------------------------------------------------------------------------------------
+# Upload an image from your computer instead of linking one with 'url'
+# ---------------------------------------------------------------------------------------
+# - relative paths are looked up in your images folder first (botterino-config/images by default,
+#   change it with `python -m botterino.configure` or 'images_dir' in config.ini),
+#   then botterino-config/rounds, then the folder you started botterino from
+# - absolute paths work too. On windows use single quotes or forward slashes:
+#   path: 'C:\Users\me\Pictures\vegas.jpg'   or   path: C:/Users/me/Pictures/vegas.jpg
+# - png, jpg, jpeg and gif images up to 20MB are supported
+upload_round:
+  title: 'What are my coordinates?'
+  path: vegas.jpg
+  answer: 36.170439, -115.139889
+  tolerance: 50
 
-# post a round and reply to all comments
-# must specify answer and tolerance
+# ---------------------------------------------------------------------------------------
+# Post a round and reply to all comments
+# ---------------------------------------------------------------------------------------
+# must specify answer and tolerance (in meters)
 # answer must be in decimal format
 vegas_round:
   title: 'What are my coordinates?'
@@ -22,123 +43,111 @@ vegas_round:
   tolerance: 50.0
   url: https://i.imgur.com/qBRRrbD.jpg
 
-# post a round and check text (case insensitive)
-  # use the 'text' field to check text and add 'similarity'
-  # similarity ranges from 0.0 - 1.0
-  # a similarity of 1.0 will only correct exact matches
-  # this is not a good method to check for short strings
-  # be careful when using this. don't get banned.
-# (can also check text and coordinates on the same round)
+# ---------------------------------------------------------------------------------------
+# Check text (case insensitive)
+# ---------------------------------------------------------------------------------------
+# - use the 'text' field to check text and add 'similarity'
+# - similarity ranges from 0.0 - 1.0, a similarity of 1.0 will only correct exact matches
+# - this is not a good method to check for short strings
+# - be careful when using this. don't get banned.
+# - can also check text and coordinates on the same round
 text_round:
   title: what did johnny have to say about this restaurant on google maps?
-  text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
-  similarity: .9 # will correct the guess if it is at least 90% similar to the answer. This field is required to check text
+  text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  similarity: .9 # will correct the guess if it is at least 90% similar to the answer
   url: https://i.imgur.com/qBRRrbD.jpg
 
-
 # check text (case sensitive)
-# the ignorecase field is implicitly true if unspecified
-text_round:
+# the ignorecase field is true if unspecified
+case_sensitive_text_round:
   title: foo
-  url: imgur.com/abcd
+  url: https://i.imgur.com/qBRRrbD.jpg
   text: Some Text
   similarity: .96
-  ignorecase: False
+  ignorecase: false
 
-# post a round, only reply to comments with incorrect coordinates
+# ---------------------------------------------------------------------------------------
+# Only reply to comments with incorrect coordinates
+# ---------------------------------------------------------------------------------------
 # this means you will have to correct the winning comment yourself
 # useful if you want to ask an additional question
-manualround:
+manual_round:
   title: 'What are my coordinates? What is the name of the man to my right?'
   answer: 76.170439, -85.139889
   tolerance: 20.0
   url: https://i.imgur.com/qBRRrbD.jpg
   manual: true
 
-# post a round with a message
-# posts the message as a top level comment when the round is submitted
-Japanese:
+# ---------------------------------------------------------------------------------------
+# Post a message as a top level comment when the round is submitted
+# ---------------------------------------------------------------------------------------
+message_round:
   title: '100 Music Video Rounds in 100 Languages - #13 Japanese - Coordinates of the drummer on the rooftop within 10 meters please'
   answer: 25.046965, 121.522235
   tolerance: 10
-  url: https://cdn.discordapp.com/attachments/735309018112983102/764113099388747786/unknown.png
+  url: https://i.imgur.com/qBRRrbD.jpg
   message: "hello my name is itox and I like bridges"
 
-# post a round with a message containing multiple lines (add the | after 'message:')
-# posts the message as a top level comment when the round is submitted
+# a message containing multiple lines (add the | after 'message:')
 # note that reddit commenting requires two new lines to display a single new line
-Japanese:
-  title: '100 Music Video Rounds in 100 Languages - #13 Japanese - Coordinates of the drummer on the rooftop within 10 meters please'
+multiline_message_round:
+  title: '100 Music Video Rounds in 100 Languages - #14 Turkish - Coordinates please'
   answer: 25.046965, 121.522235
   tolerance: 10
-  url: https://cdn.discordapp.com/attachments/735309018112983102/764113099388747786/unknown.png
+  url: https://i.imgur.com/qBRRrbD.jpg
   message: |
-    In this series I will be doing a music video round for 100 lanuages in order of total number of speakers
+    In this series I will be doing a music video round for 100 languages in order of total number of speakers
 
+    [here](https://www.visualcapitalist.com/wp-content/uploads/2020/02/the-100-most-spoken-languages.jpg) is the full list I will be using.
 
-    [here](https://www.visualcapitalist.com/wp-content/uploads/2020/02/the-100-most-spoken-languages.jpg) is the full list
-    I will be using.
+    Masking only indicates the language and not necessarily the location
 
-    Maksing only indicates the language and not necessarily the location
-
-# post a message after the round is over
-Turkey_Round:
+# ---------------------------------------------------------------------------------------
+# Post a message after the round is over
+# ---------------------------------------------------------------------------------------
+after_round:
   title: 'this is a title'
-  answer: 23.234,123.2312325
+  answer: 23.234, 123.2312325
   tolerance: 29.0
-  url: google.com
+  url: https://i.imgur.com/qBRRrbD.jpg
   after: 'Full SP: [insert SP here]'
 
-# check multiple coordinates
-# instead of specifying 'answer' and 'tolerance'
-#   you must now specify 'answers' and 'tolerances'
-#   each coordinate in 'answers' must be in quotes
-#   you must have as many tolerances as you have answers
-# coords in guess can be in any order
-# coords MUST be in decimal format
-# # can be combined with the other options like manual or after
-Example:
+# ---------------------------------------------------------------------------------------
+# Check multiple coordinates
+# ---------------------------------------------------------------------------------------
+# - instead of 'answer' and 'tolerance', specify 'answers' and 'tolerances'
+# - each coordinate in 'answers' must be in quotes
+# - you must have as many tolerances as you have answers
+# - coords in the guess can be in any order and MUST be in decimal format
+# - can be combined with the other options like manual or after
+multiple_coordinates_round:
   title: give me 3 coordinates within 20m, 60m, 40m respectively in google maps decimal format
-  answers: ['55.1894288,30.19891', '5.3539059,-1.3835478', '69.511346, 103.513381']
+  answers: ['55.1894288, 30.19891', '5.3539059, -1.3835478', '69.511346, 103.513381']
   tolerances: [20, 60, 40]
   url: https://i.imgur.com/XhDXplk.jpg
 
-# add multiple rounds in rounds.yaml
-# to do this, just put two rounds right next to each other like this:
-round_1:
-  title: 'foo'
-  answer: 12.34, 56.78
-  tolerance: 42.0
-  url: google.com
-round_2:
-  title: 'foo2'
-  answer: 12.34, 56.78
-  tolerance: 52.0
-  url: bing.com
-
-# remember to save the file rounds.yaml
-
-# rounds.yaml can be edited to add new rounds while the bot is running
-# when rounds are loaded, they are removed from rounds.yaml saved to a file called archive.yaml
-
+# ---------------------------------------------------------------------------------------
 # Automatically number rounds of a series
-# Rules explained below
-Series:
+# ---------------------------------------------------------------------------------------
+series_round:
   title: Coordinates of this bridge?
   series: Trains on Bridges
-  answer: 42.4343543,45.434543
+  answer: 42.4343543, 45.434543
   tolerance: 32
   url: https://i.imgur.com/7z48TYm.jpg
 
-# Botterino will search through titles of your most recent 100 pg rounds for the string given in `series`
-# titles must match the following format: [<series> #N] or [<series> #N/N] (tolerant of whitespce, # optional, no brackets optional)
-# if a match is found, the series number will be incremented
+# Botterino searches the titles of your most recent 200 pg rounds for the string given in `series`
+# titles must match the format: [<series> #N] or [<series> #N/N] (tolerant of whitespace and case, # optional, brackets optional)
+# if a match is found, the series number is incremented
 # in the above example, if a previous round was named:
-# a. [Round <Round Number>] Trains on Bridges #19 Coordinates of this bridge?
-# b. [Round <Round Number>] [Trains on Bridges #19/350] Coordinates of this bridge?
-# c. <There was no match found>
+#   a. [Round <Round Number>] Trains on Bridges #19 Coordinates of this bridge?
+#   b. [Round <Round Number>] [Trains on Bridges #19/350] Coordinates of this bridge?
+#   c. <There was no match found>
 # the resulting title becomes:
-#  a. [Round <Round Number>] [Trains on Bridges #20] Coordinates of this bridge?
-#  b. [Round <Round Number>] [Trains on Bridges #20/350] Coordinates of this bridge?
-#  c. [Round <Round Number>] [Trains on Bridges #1]
-# if no match is found this round will be labeled as the first round in the series
+#   a. [Round <Round Number>] [Trains on Bridges #20] Coordinates of this bridge?
+#   b. [Round <Round Number>] [Trains on Bridges #20/350] Coordinates of this bridge?
+#   c. [Round <Round Number>] [Trains on Bridges #1] Coordinates of this bridge?
+
+# remember to save rounds.yaml
+# rounds.yaml can be edited to add new rounds while the bot is running
+# when a round is posted, it is removed from rounds.yaml and saved to archive.yaml

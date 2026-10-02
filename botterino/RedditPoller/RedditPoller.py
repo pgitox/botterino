@@ -1,56 +1,58 @@
-import itertools
+import time
+from collections import OrderedDict
 
 from .Retry import retry
 
-POLL_LIMIT = 50
+POLL_LIMIT = 100
 
 
 class FifoSet:
     def __init__(self, size):
         self.size = size
-        self._fifo = []
-        self._set = set()
+        self._items = OrderedDict()
 
     def __contains__(self, item):
-        return item in self._set
+        return item in self._items
 
     def add(self, item):
-        if len(self._set) == self.size:
-            self._set.remove(self._fifo.pop(0))
-        self._fifo.append(item)
-        self._set.add(item)
-
-
-class CommentWrapper:
-    def __init__(self, func1, func2):
-        self.f1 = func1
-        self.f2 = func2
-
-    def __call__(self, *args, **kwargs):
-        return itertools.chain(self.f1(*args, **kwargs), self.f2(*args, **kwargs))
+        if item in self._items:
+            return
+        if len(self._items) >= self.size:
+            self._items.popitem(last=False)
+        self._items[item] = None
 
 
 class RedditPoller:
-    def __init__(self, function, before=None):
-        self.function = function
+    """
+    Polls one or more reddit listings (newest first) and yields each item once, oldest first.
+    Yields None after every poll that had nothing new
+    """
+
+    def __init__(self, *functions, interval=1):
+        self.functions = functions
+        self.interval = interval
         self.seenNames = FifoSet(POLL_LIMIT * 1000)
-        self.beforeName = before
 
     def getLatest(self):
         while True:
-            newestName = None
-            for item in self._poll():
-                if item.name in self.seenNames:
-                    continue
+            new = [item for item in self._poll() if item.name not in self.seenNames]
+            new.sort(key=lambda item: getattr(item, "created_utc", 0))
+            for item in new:
                 self.seenNames.add(item.name)
-                newestName = item.name
                 yield item
-
-            self.beforeName = newestName
             yield None
+            if not new:
+                time.sleep(self.interval)
 
-    @retry
     def _poll(self):
-        return reversed(
-            list(self.function(limit=POLL_LIMIT, params={"before": self.beforeName}))
-        )
+        items = []
+        for function in self.functions:
+            items.extend(self._fetch(function))
+        return items
+
+    @staticmethod
+    @retry
+    def _fetch(function):
+        # the 'before' parameter is not used on purpose, reddit returns nothing when
+        # the item it refers to is deleted or comes from a different listing
+        return list(function(limit=POLL_LIMIT)) or []
